@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS mycook CHARACTER SET utf8mb4 COLLATE utf8mb4_spani
 
 USE mycook;
 
--- Tabla users
+-- Tabla users (user_id, name, email, password)
 CREATE TABLE users (
     user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL
 );
 
--- Tabla ingredients
+-- Tabla ingredients (ingredient_id, name, calories, carbohydrates, sugars, fat, saturated, protein, salt)
 CREATE TABLE ingredients (
     ingredient_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE ingredients (
     salt DECIMAL NOT NULL
 );
 
--- Tabla channels
+-- Tabla channels (channel_id, name, is_public, open_posting)
 CREATE TABLE channels (
     channel_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -31,26 +31,38 @@ CREATE TABLE channels (
     open_posting BOOLEAN NOT NULL
 );
 
--- Tabla measurements
+-- Tabla measurements (measurement_id, name)
 CREATE TABLE measurements (
     measurement_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     type ENUM('volume', 'weight')
 );
 
--- Tabla methods
+-- Tabla methods (method_id, name)
 CREATE TABLE methods (
     method_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
--- Tabla categories
+-- Tabla categories (category_id, name)
 CREATE TABLE categories (
     category_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
--- Tabla recipes
+-- Tabla tags(tag_id, name)
+CREATE TABLE tags (
+    tag_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Tabla menus(menu_id, name)
+CREATE TABLE menus (
+    menu_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Tabla recipes (recipe_id, duration, difficulty, portion)
 CREATE TABLE recipes (
     recipe_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     duration TIME NOT NULL,
@@ -58,7 +70,7 @@ CREATE TABLE recipes (
     quantity INT UNSIGNED NOT NULL
 );
 
--- Tabla posts
+-- Tabla posts (post_id, author, date, title, body, user_id(PK), recipe_id(PK))
 CREATE TABLE posts (
     post_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -70,7 +82,7 @@ CREATE TABLE posts (
     FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id)
 );
 
--- Tabla comment
+-- Tabla comment(comment_id, body, user_id(PK), post_id(PK))
 CREATE TABLE comment (
     comment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -81,7 +93,7 @@ CREATE TABLE comment (
     FOREIGN KEY (post_id) REFERENCES posts(post_id)
 );
 
--- Tabla images
+-- Tabla image(image_id, url, alt, post_id(PK))
 CREATE TABLE images (
     image_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     url VARCHAR(255) NOT NULL,
@@ -90,7 +102,8 @@ CREATE TABLE images (
     FOREIGN KEY (post_id) REFERENCES posts(post_id)
 );
 
--- Tabla members
+-- Tabla members(user_id(PK), group_id(PK), rol)
+
 CREATE TABLE members (
     member_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
@@ -100,7 +113,7 @@ CREATE TABLE members (
     FOREIGN KEY (channel_id) REFERENCES channels(channel_id)
 );
 
--- Tabla post_channel
+-- Tabla post_channel(post_id(PK), channel_id(PK))
 CREATE TABLE post_channels (
     post_channel_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     post_id INT UNSIGNED NOT NULL,
@@ -109,7 +122,7 @@ CREATE TABLE post_channels (
     FOREIGN KEY (channel_id) REFERENCES channels(channel_id)
 );
 
--- Tabla recipe_ingredient
+-- Tabla recipe_ingredient(recipe_id(PK), ingredient_id(PK), measurement_id(pk), quantity)
 CREATE TABLE recipe_ingredients (
     recipe_ingredient_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     recipe_id INT UNSIGNED NOT NULL,
@@ -121,12 +134,33 @@ CREATE TABLE recipe_ingredients (
     FOREIGN KEY (measurement_id) REFERENCES measurements(measurement_id)
 );
 
+-- Tabla ingredient_category(ingredient_id(PK), category_id(PK))
 CREATE TABLE ingredient_categories(
     ingredient_category_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     ingredient_id INT UNSIGNED NOT NULL,
     category_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (ingredient_id) REFERENCES ingredients(ingredient_id),
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
+
+-- Tabla recipe_tag(recipe_id(pk), tag_id(pk))
+CREATE TABLE recipe_tags(
+    recipe_tag_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT UNSIGNED NOT NULL,
+    tag_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
+    FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
+);
+
+-- Tabla menu_recipe(menu_id(pk), recipe_id(pk), day, meal)
+CREATE TABLE menu_recipes(
+    menu_recipe_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    menu_id INT UNSIGNED NOT NULL,
+    recipe_id INT UNSIGNED NOT NULL,
+    day INT UNSIGNED NOT NULL,
+    meal INT UNSIGNED NOT NULL,
+    FOREIGN KEY (menu_id) REFERENCES menus(menu_id),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id)
 );
 
 -- Creación del usuario mycook_backend
