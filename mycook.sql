@@ -5,7 +5,7 @@ USE mycook;
 -- Tabla users (user_id, name, email, password)
 CREATE TABLE users (
     user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
