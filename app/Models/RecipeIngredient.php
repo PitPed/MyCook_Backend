@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class RecipeIngredient extends Model
 { 
@@ -11,5 +12,25 @@ class RecipeIngredient extends Model
     protected $table = 'recipe_ingredients';
     protected $primaryKey = 'recipe_ingredient_id';
     public $timestamps = false;
-    protected $guarded = ['recipe_ingredient_id', 'recipe_id', 'ingredient_id', 'measurement_id', 'quantity'];
+    protected $guarded = ['recipe_ingredient_id', 'recipe_id', 'ingredient_id', 'measurement_id'];
+    protected $fillable = ['quantity'];
+
+    /*
+    Revisar, es belongs?
+    */
+
+    public function ingredients(): HasMany
+    {
+        return $this->hasMany(Ingredient::class);
+    }
+
+    public function recipes(): HasMany
+    {
+        return $this->hasMany(Recipe::class);
+    }
+
+    public function measurements(): HasMany
+    {
+        return $this->hasMany(Measurements::class);
+    }
 }
