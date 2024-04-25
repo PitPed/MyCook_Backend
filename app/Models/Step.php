@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Step extends Model
 {
     use HasFactory;
@@ -19,8 +19,8 @@ class Step extends Model
         return $this->belongsTo(Recipe::class);
     }
 
-    public function methods(): BelongsToMany
+    public function methods(): BelongsTo
     {
-        return $this->belongsToMany(Method::class);
+        return $this->belongsTo(Method::class);
     }
 }

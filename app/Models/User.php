@@ -27,6 +27,11 @@ class User extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function members(): HasMany 
+    {
+        return $this->hasMany(Post::class);
+    }
+
     public function channels(): HasManyThrough 
     {
         return $this->hasManyThrough(Channel::class, Member::class);
