@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Comment extends Model
 {
     use HasFactory;
-    protected $table = 'comment';
+    protected $table = 'comments';
     protected $primaryKey = 'comment_id';
     public $timestamps = false;
-    protected $guarded = ['comment_id', 'date',  'user_id','post_id'];
+    protected $guarded = ['comment_id', 'date', 'user_id','post_id'];
     protected $fillable = ['body'];
     const CREATED_AT = 'date';
 

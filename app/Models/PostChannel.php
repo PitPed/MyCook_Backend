@@ -11,5 +11,5 @@ class PostChannel extends Model
     protected $table = 'post_channels';
     protected $primaryKey = 'post_channel_id';
     public $timestamps = false;
-    protected $guarded = ['post_id', 'channel_id'];
+    protected $guarded = ['post_channel_id', 'post_id', 'channel_id'];
 }

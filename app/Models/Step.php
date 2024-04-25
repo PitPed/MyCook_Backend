@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 class Step extends Model
 {
     use HasFactory;
     protected $table = 'steps';
     protected $primaryKey = 'step_id';
     public $timestamps = false;
-    protected $guarded = ['step_id', 'title', 'description', 'time', '', ''];
+    protected $guarded = ['step_id', 'title', 'description', 'time'];
     protected $fillable = ['name'];
 
     public function recipe(): BelongsTo
@@ -19,8 +19,8 @@ class Step extends Model
         return $this->belongsTo(Recipe::class);
     }
 
-    public function methods(): BelongsTo
+    public function method(): HasOne
     {
-        return $this->belongsTo(Method::class);
+        return $this->hasOne(Method::class);
     }
 }
