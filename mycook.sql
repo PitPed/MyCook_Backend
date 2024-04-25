@@ -59,7 +59,9 @@ CREATE TABLE tags (
 -- Tabla menus(menu_id, name)
 CREATE TABLE menus (
     menu_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    user_id INT UNSIGNED,
+    name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Tabla recipes (recipe_id, duration, difficulty, portion)
@@ -97,9 +99,7 @@ CREATE TABLE comment (
 CREATE TABLE images (
     image_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     url VARCHAR(255) NOT NULL,
-    alt VARCHAR(255) NOT NULL,
-    post_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES posts(post_id)
+    alt VARCHAR(255) NOT NULL
 );
 
 -- Tabla members(user_id(PK), group_id(PK), rol)
@@ -162,6 +162,55 @@ CREATE TABLE menu_recipes(
     FOREIGN KEY (menu_id) REFERENCES menus(menu_id),
     FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id)
 );
+
+-- Tabla steps (step_id(PK), title, description, time, image_id(FK), method_id(FK))
+CREATE TABLE steps (
+    step_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    time TIME NOT NULL,
+    image_id INT UNSIGNED,
+    method_id INT UNSIGNED,
+    FOREIGN KEY (image_id) REFERENCES images(image_id),
+    FOREIGN KEY (method_id) REFERENCES methods(method_id)
+);
+
+-- Tabla recipe_steps (recipe_steps_id(PK), recipe_id(FK), step_id(FK))
+CREATE TABLE recipe_steps (
+    recipe_steps_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT UNSIGNED NOT NULL,
+    step_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
+    FOREIGN KEY (step_id) REFERENCES steps(step_id)
+);
+
+-- Tabla post_images (post_image_id(PK), post_id(FK), image_id(FK))
+CREATE TABLE post_images (
+    post_image_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    post_id INT UNSIGNED NOT NULL,
+    image_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id),
+    FOREIGN KEY (image_id) REFERENCES images(image_id)
+);
+
+-- Tabla user_images (user_image_id(PK), user_id(FK), image_id(FK))
+CREATE TABLE user_images (
+    user_image_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    image_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (image_id) REFERENCES images(image_id)
+);
+
+-- Tabla step_images (step_image_id(PK), step_id(FK), image_id(FK))
+CREATE TABLE step_images (
+    step_image_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    step_id INT UNSIGNED NOT NULL,
+    image_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (step_id) REFERENCES steps(step_id),
+    FOREIGN KEY (image_id) REFERENCES images(image_id)
+);
+
 
 -- Creación del usuario mycook_backend
 CREATE USER 'mycook_backend'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('MyC00k1324');
