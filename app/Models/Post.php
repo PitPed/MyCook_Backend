@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Post extends Model
 {
@@ -13,9 +14,13 @@ class Post extends Model
     protected $table = 'posts';
     protected $primaryKey = 'post_id';
     public $timestamps = false;
-    protected $guarded = ['post_id', 'date',  'user_id'];
-    protected $fillable = ['title', 'body'];
+    protected $guarded = ['post_id', 'date'];
+    protected $fillable = ['user_id', 'title', 'body'];
     const CREATED_AT = 'date';
+
+    public function recipe(): HasOne{
+        return $this->hasOne(Recipe::class);
+    }
 
     public function comments(): HasMany
     {
