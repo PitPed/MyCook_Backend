@@ -13,8 +13,8 @@ class Post extends Model
     protected $table = 'posts';
     protected $primaryKey = 'post_id';
     public $timestamps = false;
-    protected $guarded = ['post_id', 'date',  'user_id','recipe_id'];
-    protected $fillable = ['duration','title', 'body'];
+    protected $guarded = ['post_id', 'date',  'user_id'];
+    protected $fillable = ['title', 'body'];
     const CREATED_AT = 'date';
 
     public function comments(): HasMany

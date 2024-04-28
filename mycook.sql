@@ -64,24 +64,24 @@ CREATE TABLE menus (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
--- Tabla recipes (recipe_id, duration, difficulty, portion)
-CREATE TABLE recipes (
-    recipe_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    duration TIME NOT NULL,
-    difficulty ENUM('facil', 'medio', 'dificil') NOT NULL,
-    quantity INT UNSIGNED NOT NULL
-);
-
--- Tabla posts (post_id, author, date, title, body, user_id(PK), recipe_id(PK))
+-- Tabla posts (post_id, author, date, title, body, user_id(PK))
 CREATE TABLE posts (
     post_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     title VARCHAR(255) NOT NULL,
     body TEXT NOT NULL,
     user_id INT UNSIGNED NOT NULL,
-    recipe_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- Tabla recipes (recipe_id, duration, difficulty, portion, post_id(PK))
+CREATE TABLE recipes (
+    recipe_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    post_id INT UNSIGNED,
+    duration TIME NOT NULL,
+    difficulty ENUM('facil', 'medio', 'dificil') NOT NULL,
+    quantity INT UNSIGNED NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id)
 );
 
 -- Tabla comment(comment_id, body, user_id(PK), post_id(PK))
