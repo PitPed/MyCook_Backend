@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class SessionController extends Controller
 {
     public function isLogged(Request $request)
     {
         return response()->json([
-            "isLogged" => !empty($request->session()->get('user')),
-            'user' => ($request->session()->exists('user') ?
-                $request->session()->get('user') : false)
+            "isLogged" => $request->session()->has('user'),
+            'session' => session()->getId(),
+            'user'=> Session::get('user')
         ], 200);
     }
 
@@ -39,7 +40,10 @@ class SessionController extends Controller
         $request->session()->put('user', $user->user_id);
 
         $now = new \DateTime('now');
-        return response()->json(['message' => 'Login correcto', 'date' => $now->format('d-M-Y H:i:s')], 200);
+        return response()->json(
+            [   'message' => 'Login correcto', 'date' => $now->format('d-M-Y H:i:s'),
+                'session' => session()->getId(),
+                'user'=> Session::get('user')], 200);
 
     }
 
