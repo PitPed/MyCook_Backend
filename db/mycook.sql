@@ -170,9 +170,7 @@ CREATE TABLE steps (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     time TIME NOT NULL,
-    image_id INT UNSIGNED,
     method_id INT UNSIGNED,
-    FOREIGN KEY (image_id) REFERENCES images(image_id),
     FOREIGN KEY (method_id) REFERENCES methods(method_id)
 );
 
