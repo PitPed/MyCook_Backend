@@ -23,6 +23,9 @@ use App\Http\Middleware\SessionHandler;
     return $request->user();
 }); */
 
+Route::get('/health', function(Request $request){return response()->json(['message'=>'ok'], 200);});
+
+
 Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group(function () {
     Route::get('/auth/logged', [SessionController::class, 'isLogged']);
     Route::get('/auth/admin', [SessionController::class, 'createAdmin']);

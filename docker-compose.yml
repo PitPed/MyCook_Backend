@@ -25,7 +25,6 @@ services:
             - mysql
     mysql:
         image: 'mysql/mysql-server:8.0'
-        command: 'chmod 007 /db/createdb.sh && /db/createdb.sh'
         ports:
             - '${FORWARD_DB_PORT:-3336}:3306'
         environment:
