@@ -212,7 +212,7 @@ CREATE TABLE step_images (
 
 
 -- Creación del usuario mycook_backend
-CREATE USER 'mycook_backend'@'localhost' IDENTIFIED BY 'MyC00k1324';
+CREATE USER IF NOT EXISTS 'mycook_backend'@'localhost' IDENTIFIED BY 'MyC00k1324';
 
 -- Darle permisos en mycook
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON `mycook`.* TO 'mycook_backend'@'localhost';
