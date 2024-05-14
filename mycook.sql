@@ -14,9 +14,9 @@ CREATE TABLE users (
 CREATE TABLE ingredients (
     ingredient_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    calories DECIMAL NOT NULL,
-    carbohydrates DECIMAL NOT NULL,
-    sugars DECIMAL NOT NULL,
+    calorie DECIMAL NOT NULL,
+    carbohydrate DECIMAL NOT NULL,
+    sugar DECIMAL NOT NULL,
     fat DECIMAL NOT NULL,
     saturated DECIMAL NOT NULL,
     protein DECIMAL NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE recipes (
 );
 
 -- Tabla comment(comment_id, body, user_id(PK), post_id(PK))
-CREATE TABLE comment (
+CREATE TABLE comments (
     comment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     body TEXT NOT NULL,
@@ -169,9 +169,7 @@ CREATE TABLE steps (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     time TIME NOT NULL,
-    image_id INT UNSIGNED,
     method_id INT UNSIGNED,
-    FOREIGN KEY (image_id) REFERENCES images(image_id),
     FOREIGN KEY (method_id) REFERENCES methods(method_id)
 );
 
