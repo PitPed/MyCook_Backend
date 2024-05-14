@@ -47,6 +47,35 @@ class SessionController extends Controller
 
     }
 
+    public function register(Request $request)
+    {
+        if (!isset($request->username) || !isset($request->email) || !isset($request->password)) {
+            return response()->json(['message' => 'Se deben rellenar todos los campos'], 400);
+        }
+
+        if(User::where('name', '=', $request->username)->orWhere('email', '=', $request->email)->count()>0){
+            return response()->json(['message' => 'Ya existe un usuario con ese nombre o email'], 400);
+        }
+
+        $badRegister = response()->json(['message' => 'No se ha podido crear el usuario'], 400);
+
+        $user = User::create([
+            'name'=>$request->username,
+            'email'=>$request->email,
+            'password'=>Hash::make($request->password)
+        ]);
+
+        if($user->save()){
+            $request->session()->put('user', $user->user_id);
+            return response()->json(
+                [   'message' => 'El usuario ha sido creado',
+                    'session' => session()->getId(),
+                    'user'=> Session::get('user')], 200);
+        }else{
+            return $badRegister;
+        }
+    }
+
     public function logout(Request $request)
     {
         $request->session()->pull('user', $request->id_usuario);

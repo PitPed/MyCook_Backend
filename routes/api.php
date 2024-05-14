@@ -26,8 +26,9 @@ use App\Http\Middleware\SessionHandler;
 Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group(function () {
     Route::get('/auth/logged', [SessionController::class, 'isLogged']);
     Route::get('/auth/admin', [SessionController::class, 'createAdmin']);
-    Route::post('/auth/login', [SessionController::class, 'login']);
     Route::get('/auth/logout', [SessionController::class, 'logout']);
+    Route::post('/auth/login', [SessionController::class, 'login']);
+    Route::post('/auth/register', [SessionController::class, 'register']);
 
     Route::get('/post/all', [PostController::class, 'getAllPosts']);
     Route::post('/post/create/{type}', [PostController::class, 'create']);
