@@ -34,6 +34,7 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::post('/auth/register', [SessionController::class, 'register']);
 
     Route::get('/post/all', [PostController::class, 'getAllPosts']);
-    Route::post('/post/create/{type}', [PostController::class, 'create']);
+    Route::get('/post/get/{id}', [PostController::class, 'getPost']);
+    Route::post('/post/create/', [PostController::class, 'create']);
 });
 

@@ -27,9 +27,9 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function images(): HasMany 
+    public function images(): HasManyThrough
     {
-        return $this->hasMany(Image::class);
+        return $this->hasManyThrough(Image::class,PostImage::class, 'post_id', 'image_id');
     }
 
     public function channels(): HasMany 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Image extends Model
 {
@@ -13,4 +14,8 @@ class Image extends Model
     public $timestamps = false;
     protected $guarded = ['image_id'];
     protected $fillable = ['url','alt'];
+
+    public function post(): BelongsTo{
+        return $this->belongsTo(PostImage::class);
+    }
 }
