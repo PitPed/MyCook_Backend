@@ -75,6 +75,16 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+-- Tabla post_votes (post_vote_id(PK), liked, user_id(FK), post_id(FK))
+CREATE TABLE post_votes (
+    post_vote_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    liked BOOLEAN NOT NULL,
+    user_id INT UNSIGNED NOT NULL,
+    post_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (post_id) REFERENCES posts(post_id)
+);
+
 -- Tabla recipes (recipe_id, duration, difficulty, portion, post_id(PK))
 CREATE TABLE recipes (
     recipe_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
