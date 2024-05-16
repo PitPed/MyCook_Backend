@@ -22,6 +22,11 @@ class User extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function votes(): HasMany
+    {
+        return $this->hasMany(Vote::class);
+    }
+
     public function posts(): HasMany 
     {
         return $this->hasMany(Post::class);
