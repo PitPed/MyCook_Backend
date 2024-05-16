@@ -58,5 +58,15 @@ class PostController extends Controller
         //response()->json([ "message" => $type.' is not a valid type'], 400);
     }
 
+    function deletePost(Request $request){
+        function respond($success){
+            return response()->json(['message'=>$success?'Post deleted succesfully':'Can not delete this post'],$success?200:400);
+        }
+        $post = Post::find($request->id);
+        if($post==null)return respond(false);
+        $deleted = $post->delete();
+        return respond($deleted);
+    } 
+
     
 }

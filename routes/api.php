@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SessionController;
@@ -35,6 +36,10 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
 
     Route::get('/post/all', [PostController::class, 'getAllPosts']);
     Route::get('/post/get/{id}', [PostController::class, 'getPost']);
+    Route::get('/post/delete/{id}', [PostController::class, 'deletePost']);
     Route::post('/post/create/', [PostController::class, 'create']);
+
+    Route::get('/user/get/{id}', [UserController::class, 'getUser']);
+
 });
 
