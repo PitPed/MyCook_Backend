@@ -28,6 +28,11 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function postImages(): HasMany
+    {
+        return $this->hasMany(PostImage::class, 'post_id');
+    }
+
     public function images(): HasManyThrough
     {
         return $this->hasManyThrough(Image::class,PostImage::class, 'post_id', 'image_id');

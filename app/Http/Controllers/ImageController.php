@@ -3,26 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Str;
 
 class ImageController extends Controller
 {
-    public function getFoto(Request $request)
+    public function getImage(Request $request)
     {
-        $path = storage_path('app\\public\\images\\') . $request->path;
-
+        $path = storage_path('app/public/images/') . $request->path;
         if (!file_exists($path)) {
-            return response()->json(['message' => 'La imagen no existe'], 400);
+            return response()->json(['message' => 'La imagen no existe', 'path'=>json_encode($path, JSON_UNESCAPED_SLASHES)], 400);
         }
-        return response()->file($path);
-    }
-
-    private function saveImage(Request $request, string $fileName)
-    {
-        $paths = [];
-        foreach ($request->file($fileName) as $file) {
-            $paths[] = Str::after($file->storePublicly('images', 'public'), 'images/');
-        }
-        return $paths;
-    }
+        return response()->download($path);
+    }    
 }

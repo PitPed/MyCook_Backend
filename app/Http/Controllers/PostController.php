@@ -7,6 +7,7 @@ use App\Models\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Str;
 
 class PostController extends Controller
 {
@@ -48,12 +49,42 @@ class PostController extends Controller
         ], 200); */
     }
 
+    public function saveFiles(Request $request, string $fileName)
+    {
+        $paths = [];
+        foreach ($request->file($fileName) as $file) {
+            $paths[] = Str::after($file->storePublicly('images', 'public'), 'images/');
+        }
+        return $paths;
+    }
+
     function create(Request $request){
-        //$this->createPost($request);
-        dd($request);
-        return response()->json([
-            "message" => 'hola',
+        $newPost = Post::create([
+            'user_id'=>Session::get('user')||1,
+            'title'=>$request->get('title'),
+            'body'=>$request->get('description'),
+        ]);
+
+
+        $saved = $newPost->save();
+        if ($saved) {
+            $fotos = $this->saveFiles($request, 'images');
+            foreach ($fotos as $foto) {
+                $image = $newPost->images()->create(array('url' => $foto, 'alt'=> $newPost->title));
+                $newPost->postImages()->create(array('image_id'=>$image->image_id));
+            }
+            $newPost->save();
+        }
+
+        $success = response()->json([
+            "message" => 'Post created',
+            'post' => $newPost
         ], 200);
+        $error = response()->json([
+            "message" => 'Error creating the post',
+        ], 400);
+
+        return $saved?$success:$error;
         //$this->createRecipe($request);
         //response()->json([ "message" => $type.' is not a valid type'], 400);
     }
@@ -66,6 +97,15 @@ class PostController extends Controller
         if($post==null)return respond(false);
         $deleted = $post->delete();
         return respond($deleted);
+    }
+    function deletePostRange(Request $request){
+        $return = '';
+        for($i=$request->first; $i<=$request->last;$i++){
+            $return.= $i;
+            $post = Post::find($i);
+            if($post!=null)$post->delete();
+        }
+        return response()->json(['message'=>'Deleted existent posts', 'tried'=> $return],200);
     } 
 
     

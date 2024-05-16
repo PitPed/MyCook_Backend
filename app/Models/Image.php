@@ -15,7 +15,7 @@ class Image extends Model
     protected $guarded = ['image_id'];
     protected $fillable = ['url','alt'];
 
-    public function post(): BelongsTo{
+    public function postImage(): BelongsTo{
         return $this->belongsTo(PostImage::class);
     }
 }

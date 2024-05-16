@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SessionController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SessionController;
 use App\Http\Middleware\AllowHeadersMiddleware;
 use App\Http\Middleware\SessionHandler;
 
@@ -26,6 +28,7 @@ use App\Http\Middleware\SessionHandler;
 
 Route::get('/health', function(Request $request){return response()->json(['message'=>'ok'], 200);});
 
+Route::get('/image/{path}', [ImageController::class,'getImage']);
 
 Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group(function () {
     Route::get('/auth/logged', [SessionController::class, 'isLogged']);
@@ -37,9 +40,11 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::get('/post/all', [PostController::class, 'getAllPosts']);
     Route::get('/post/get/{id}', [PostController::class, 'getPost']);
     Route::get('/post/delete/{id}', [PostController::class, 'deletePost']);
+    Route::get('/post/deleteRange/{first}/{last}', [PostController::class, 'deletePostRange']);
     Route::post('/post/create/', [PostController::class, 'create']);
 
     Route::get('/user/get/{id}', [UserController::class, 'getUser']);
+
 
 });
 
