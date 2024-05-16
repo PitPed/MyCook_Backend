@@ -16,7 +16,7 @@ class Post extends Model
     protected $primaryKey = 'post_id';
     public $timestamps = false;
     protected $guarded = ['post_id', 'date'];
-    protected $fillable = ['user_id', 'title', 'body', 'user'];
+    protected $fillable = ['user_id', 'title', 'body', 'user', 'votes','voted'];
     const CREATED_AT = 'date';
 
     public function recipe(): HasOne{
@@ -25,7 +25,7 @@ class Post extends Model
 
     public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class, 'post_id');
     }
 
     public function postImages(): HasMany
@@ -48,8 +48,12 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function votes(): HasMany
+    public function votesRelation(): HasMany
     {
-        return $this->hasMany(Vote::class);
+        return $this->hasMany(Vote::class, 'post_id');
+    }
+
+    public function votesNumber():int{
+        return $this->votesRelation()->where('liked', '=',true)->count() - $this->votesRelation()->where('liked', '=',false)->count();
     }
 }

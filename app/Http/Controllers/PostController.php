@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Vote;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -12,17 +14,24 @@ use Str;
 class PostController extends Controller
 {
     function getAllPosts(Request $request){
-        return Post::count()>0?
-        response()->json([
-            "posts" => Post::with('user', 'images')->orderByDesc('post_id')->get()
-        ], 200):
-        response()->json([
-            "message" => 'There are no posts'
-        ], 400);
+        if(Post::count()<1) return response()->json(["message" => 'There are no posts'], 400);
+        $posts = Post::with('user', 'images')->orderByDesc('post_id')->get();
+        foreach($posts as $post){
+            $post->votes = $post->votesNumber();
+            $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
+            $post->voted = $voted?$voted->liked:null;
+        }
+        return response()->json([
+            "posts" => $posts
+        ], 200);
+       
     }
 
     function getPost(Request $request){
-        $post = Post::with('user', 'images')->find($request->id);
+        $post = Post::with('user', 'images', 'comments','comments.user')->find($request->id);
+        $post->votes = $post->votesNumber();
+        $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
+        $post->voted = $voted?$voted->liked:null;
         return  $post!= null
         ? response()->json([
             "post" => $post,
@@ -32,22 +41,6 @@ class PostController extends Controller
         ], 400);
     }
 
-    function createPost(Request $request){
-        //dd($request);
-        
-        /* $newPost = Post::create([
-            'user_id'=>'1',
-            'title'=>$request->request->get('title'),
-            'body'=>$request->request->get('description'),
-            'votes'=>0,
-        ]);
-        //error_log($request->request->all());
-        $newPost->save();
-        response()->json([
-            "message" => 'Post creado con éxito',
-            "id"=>$newPost->post_id
-        ], 200); */
-    }
 
     public function saveFiles(Request $request, string $fileName)
     {
@@ -60,7 +53,7 @@ class PostController extends Controller
 
     function create(Request $request){
         $newPost = Post::create([
-            'user_id'=>Session::get('user')||1,
+            'user_id'=>Session::has('user')?Session::get('user'):1,
             'title'=>$request->get('title'),
             'body'=>$request->get('description'),
         ]);
@@ -101,12 +94,21 @@ class PostController extends Controller
     function deletePostRange(Request $request){
         $return = '';
         for($i=$request->first; $i<=$request->last;$i++){
-            $return.= $i;
+            $return.= $i.', ';
             $post = Post::find($i);
             if($post!=null)$post->delete();
         }
         return response()->json(['message'=>'Deleted existent posts', 'tried'=> $return],200);
     } 
 
-    
+    public function votePost(Request $request){
+        $vote=Vote::firstOrCreate([
+            'user_id'=> Session::get('user'),
+            'post_id'=> $request->id,
+            'liked'=>0
+        ]);
+        $vote->liked = $request->liked;
+        $vote->save();
+        return response()->json(['message'=>'Voted', 'vote'=> $vote],200);
+    }
 }

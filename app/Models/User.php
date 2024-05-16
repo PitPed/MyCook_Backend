@@ -15,7 +15,7 @@ class User extends Model
     public $timestamps = false;
     protected $guarded = ['user_id'];
     protected $fillable = ['name', 'email', 'password'];
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'email'];
 
     public function comments(): HasMany
     {
@@ -24,7 +24,7 @@ class User extends Model
 
     public function votes(): HasMany
     {
-        return $this->hasMany(Vote::class);
+        return $this->hasMany(Vote::class, 'user_id');
     }
 
     public function posts(): HasMany 

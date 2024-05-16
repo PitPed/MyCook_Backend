@@ -38,13 +38,12 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::post('/auth/register', [SessionController::class, 'register']);
 
     Route::get('/post/all', [PostController::class, 'getAllPosts']);
+    Route::get('/post/vote/{id}/{liked}',[PostController::class, 'votePost']);
     Route::get('/post/get/{id}', [PostController::class, 'getPost']);
     Route::get('/post/delete/{id}', [PostController::class, 'deletePost']);
     Route::get('/post/deleteRange/{first}/{last}', [PostController::class, 'deletePostRange']);
     Route::post('/post/create/', [PostController::class, 'create']);
 
     Route::get('/user/get/{id}', [UserController::class, 'getUser']);
-
-
 });
 
