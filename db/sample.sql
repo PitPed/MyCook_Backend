@@ -140,7 +140,7 @@ INSERT INTO recipes (post_id, duration, difficulty, quantity) VALUES
 (9, '00:45:00', 'medio', 4),
 (10, '03:00:00', 'dificil', 10);
 
-INSERT INTO comment (body, user_id, post_id) VALUES
+INSERT INTO comments (body, user_id, post_id) VALUES
 ('Great recipe, I will definitely make it again!', 2, 1),
 ('These skewers were a hit at our BBQ, thanks for sharing!', 4, 2),
 ('Simple and delicious, my family loved it!', 3, 3),

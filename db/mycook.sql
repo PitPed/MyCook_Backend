@@ -96,7 +96,7 @@ CREATE TABLE recipes (
 );
 
 -- Tabla comment(comment_id, body, user_id(PK), post_id(PK))
-CREATE TABLE comment (
+CREATE TABLE comments (
     comment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     body TEXT NOT NULL,
