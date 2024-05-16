@@ -106,6 +106,28 @@ INSERT INTO posts (title, body, user_id) VALUES
 ('Shrimp Tacos', 'These shrimp tacos are bursting with flavor and perfect for taco night...', 9),
 ('Holiday Roast Turkey', 'Impress your guests with this juicy and flavorful roast turkey...', 10);
 
+INSERT INTO post_votes (liked, user_id, post_id) VALUES
+(true, 1, 1),
+(false, 2, 1),
+(true, 3, 2),
+(false, 4, 2),
+(true, 5, 3),
+(false, 6, 3),
+(true, 7, 4),
+(false, 8, 4),
+(true, 9, 5),
+(false, 10, 5),
+(true, 1, 6),
+(false, 2, 6),
+(true, 3, 7),
+(false, 4, 7),
+(true, 5, 8),
+(false, 6, 8),
+(true, 7, 9),
+(false, 8, 9),
+(true, 9, 10),
+(false, 10, 10);
+
 INSERT INTO recipes (post_id, duration, difficulty, quantity) VALUES
 (1, '01:00:00', 'medio', 4),
 (2, '00:45:00', 'facil', 6),
