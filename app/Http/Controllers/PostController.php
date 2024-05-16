@@ -14,7 +14,7 @@ class PostController extends Controller
     function getAllPosts(Request $request){
         return Post::count()>0?
         response()->json([
-            "posts" => Post::with('user', 'images')->get()
+            "posts" => Post::with('user', 'images')->orderByDesc('post_id')->get()
         ], 200):
         response()->json([
             "message" => 'There are no posts'
