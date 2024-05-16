@@ -1,5 +1,5 @@
 INSERT INTO users (name, email, password) VALUES
-('Juan', 'juan@example.com', 'password123'),
+('Anon', 'anon@example.com', 'password123'),
 ('Maria', 'maria@example.com', 'securepass'),
 ('Pedro', 'pedro@example.com', 'mypassword'),
 ('Ana', 'ana@example.com', 'anapassword'),
@@ -131,16 +131,16 @@ INSERT INTO comment (body, user_id, post_id) VALUES
 ('First time cooking a turkey and it was a success!', 1, 10);
 
 INSERT INTO images (url, alt) VALUES
-('https://example.com/image1.jpg', 'Tomato Soup'),
-('https://example.com/image2.jpg', 'Grilled Chicken Skewers'),
-('https://example.com/image3.jpg', 'Baked Salmon'),
-('https://example.com/image4.jpg', 'Vegetarian Chili'),
-('https://example.com/image5.jpg', 'Chocolate Chip Cookies'),
-('https://example.com/image6.jpg', 'Summer Cocktails'),
-('https://example.com/image7.jpg', 'Pasta Primavera'),
-('https://example.com/image8.jpg', 'Homemade Bread'),
-('https://example.com/image9.jpg', 'Shrimp Tacos'),
-('https://example.com/image10.jpg', 'Roast Turkey');
+('image1.jpg', 'Tomato Soup'),
+('image2.jpg', 'Grilled Chicken Skewers'),
+('image3.jpg', 'Baked Salmon'),
+('image4.jpg', 'Vegetarian Chili'),
+('image5.jpg', 'Chocolate Chip Cookies'),
+('image6.jpg', 'Summer Cocktails'),
+('image7.jpg', 'Pasta Primavera'),
+('image8.jpg', 'Homemade Bread'),
+('image9.jpg', 'Shrimp Tacos'),
+('image10.jpg', 'Roast Turkey');
 
 INSERT INTO members (user_id, channel_id, rol) VALUES
 (1, 1, 'admin'),
