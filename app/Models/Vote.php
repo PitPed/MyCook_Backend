@@ -17,7 +17,7 @@ class Vote extends Model
     const CREATED_AT = 'date';
 
     public function post(): BelongsTo{
-        return $this->belongsTo(Post::class);
+        return $this->belongsTo(Post::class, 'post_id');
     }
 
     public function user(): BelongsTo{
