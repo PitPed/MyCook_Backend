@@ -15,10 +15,10 @@ class PostController extends Controller
 {
     function getAllPosts(Request $request){
         if(Post::count()<1) return response()->json(["message" => 'There are no posts'], 400);
-        $posts = Post::with('user', 'images')->orderByDesc('post_id')->get();
+        $posts = Post::with('user', 'images', 'comments','comments.user')->orderByDesc('post_id')->get();
         foreach($posts as $post){
             $post->votes = $post->votesNumber();
-            $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
+            $voted = Vote::where(['user_id'=> Session::has('user')?Session::get('user'):1,'post_id'=> $post->post_id])->first();
             $post->voted = $voted?$voted->liked:null;
         }
         return response()->json([
@@ -102,13 +102,22 @@ class PostController extends Controller
     } 
 
     public function votePost(Request $request){
-        $vote=Vote::firstOrCreate([
-            'user_id'=> Session::get('user'),
+        $vote = Vote::where([
+            'user_id'=> Session::has('user') ? Session::get('user') : 1,
             'post_id'=> $request->id,
-            'liked'=>0
-        ]);
-        $vote->liked = $request->liked;
-        $vote->save();
+        ])->first();
+    
+        if ($vote == null) {
+            $vote = Vote::create([
+                'user_id'=> Session::has('user') ? Session::get('user') : 1,
+                'post_id'=> $request->id,
+                'liked' => $request->liked
+            ]);
+        } else {
+            $vote->liked = $request->liked;
+            $vote->save();
+        }
+    
         return response()->json(['message'=>'Voted', 'vote'=> $vote],200);
     }
 }
