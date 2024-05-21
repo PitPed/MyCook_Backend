@@ -1,6 +1,3 @@
-DROP DATABASE mycook;
-CREATE DATABASE IF NOT EXISTS mycook CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
-
 USE mycook;
 
 -- Tabla users (user_id, name, email, password)
@@ -219,10 +216,3 @@ CREATE TABLE step_images (
     FOREIGN KEY (step_id) REFERENCES steps(step_id),
     FOREIGN KEY (image_id) REFERENCES images(image_id)
 );
-
-
--- Creación del usuario mycook_backend
-CREATE USER IF NOT EXISTS 'mycook_backend'@'localhost' IDENTIFIED BY 'MyC00k1324';
-
--- Darle permisos en mycook
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON `mycook`.* TO 'mycook_backend'@'localhost';

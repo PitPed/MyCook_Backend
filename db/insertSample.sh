@@ -1,1 +1,1 @@
-mysql -h "localhost" -u "root" "-ppassword" "mycook" < "/db/sample.sql"
+mysql -h "localhost" -u "mycook" "-ppassword" "mycook" < "./sample.sql"

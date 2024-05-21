@@ -1,2 +1,2 @@
-/db/createdb.sh
-/db/insertSample.sh
+./createdb.sh
+./insertSample.sh
