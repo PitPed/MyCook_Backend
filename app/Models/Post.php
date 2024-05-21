@@ -38,9 +38,9 @@ class Post extends Model
         return $this->hasManyThrough(Image::class,PostImage::class, 'post_id', 'image_id');
     }
 
-    public function channels(): HasMany 
+    public function channels(): HasManyThrough
     {
-        return $this->hasMany(Channel::class);
+        return $this->hasManyThrough(Channel::class, PostChannel::class, 'post_id', 'channel_id');
     }
 
     public function user(): BelongsTo

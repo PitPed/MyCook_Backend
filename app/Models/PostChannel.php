@@ -12,4 +12,16 @@ class PostChannel extends Model
     protected $primaryKey = 'post_channel_id';
     public $timestamps = false;
     protected $guarded = ['post_channel_id', 'post_id', 'channel_id'];
+    protected $fillable = ['post_id', 'channel_id'];
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class, 'post_id', 'post_id');
+    }
+
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class, 'channel_id', 'channel_id');
+    }
+
 }

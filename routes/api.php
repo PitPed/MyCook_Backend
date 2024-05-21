@@ -42,12 +42,19 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::get('/post/vote/{id}/{liked}',[PostController::class, 'votePost']);
     Route::get('/post/get/{id}', [PostController::class, 'getPost']);
     Route::get('/post/delete/{id}', [PostController::class, 'deletePost']);
-    Route::get('/post/deleteRange/{first}/{last}', [PostController::class, 'deletePostRange']);
+    Route::get('/post/postedBy/{id}',[ChannelController::class, 'getPostedBy']);
+    Route::get('/post/likedBy/{id}',[ChannelController::class, 'getLikedBy']);
     Route::post('/post/create/', [PostController::class, 'create']);
+    Route::get('/post/deleteRange/{first}/{last}', [PostController::class, 'deletePostRange']);
+
 
     Route::get('/user/get/{id}', [UserController::class, 'getUser']);
 
-    Route::get('/channel/postedBy/{id}',[ChannelController::class, 'getPostedBy']);
-    Route::get('/channel/likedBy/{id}',[ChannelController::class, 'getLikedBy']);
+    
+    Route::get('/channels/all/',[ChannelController::class, 'getAllChannels']);
+    Route::get('/channels/getPosts/{id}',[ChannelController::class, 'getChannelPosts']);
+    Route::get('/channels/followedBy/{id}',[ChannelController::class, 'getFollowedBy']);
+    Route::get('/channels/addPost/{channel}/{post}',[ChannelController::class,'addPostToChannel']);
+
 });
 

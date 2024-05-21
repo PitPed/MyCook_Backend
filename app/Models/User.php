@@ -39,6 +39,6 @@ class User extends Model
 
     public function channels(): HasManyThrough 
     {
-        return $this->hasManyThrough(Channel::class, Member::class);
+        return $this->hasManyThrough(Channel::class, Member::class, 'user_id', 'channel_id');
     }
 }
