@@ -5,6 +5,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\MethodController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,10 +42,12 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::get('/post/all', [PostController::class, 'getAllPosts']);
     Route::get('/post/vote/{id}/{liked}',[PostController::class, 'votePost']);
     Route::get('/post/get/{id}', [PostController::class, 'getPost']);
+    Route::get('/post/like/{title}', [PostController::class, 'getPostsLike']);
     Route::get('/post/delete/{id}', [PostController::class, 'deletePost']);
     Route::get('/post/postedBy/{id}',[ChannelController::class, 'getPostedBy']);
     Route::get('/post/likedBy/{id}',[ChannelController::class, 'getLikedBy']);
     Route::post('/post/create/', [PostController::class, 'create']);
+    
     Route::get('/post/deleteRange/{first}/{last}', [PostController::class, 'deletePostRange']);
 
 
@@ -55,6 +58,8 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::get('/channels/getPosts/{id}',[ChannelController::class, 'getChannelPosts']);
     Route::get('/channels/followedBy/{id}',[ChannelController::class, 'getFollowedBy']);
     Route::get('/channels/addPost/{channel}/{post}',[ChannelController::class,'addPostToChannel']);
-
+    
+    Route::get('/methods/all',[MethodController::class,'getAllMethods']);
+    Route::get('/methods/get/{name}',[MethodController::class,'getMethodsLike']);
 });
 

@@ -39,9 +39,8 @@ class SessionController extends Controller
 
         $request->session()->put('user', $user->user_id);
 
-        $now = new \DateTime('now');
         return response()->json(
-            [   'message' => 'Login correcto', 'date' => $now->format('d-M-Y H:i:s'),
+            [   'message' => 'Login correcto',
                 'session' => session()->getId(),
                 'user'=> Session::get('user')], 200);
 

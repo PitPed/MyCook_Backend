@@ -99,7 +99,14 @@ class PostController extends Controller
             if($post!=null)$post->delete();
         }
         return response()->json(['message'=>'Deleted existent posts', 'tried'=> $return],200);
-    } 
+    }
+
+    function getPostsLike(Request $request){
+        $posts = Post::where('title', 'LIKE', "%$request->title%")->orderByDesc('post_id')->get();
+        return response()->json([
+            "posts" => $posts
+        ], 200);
+    }
 
     public function votePost(Request $request){
         $vote = Vote::where([

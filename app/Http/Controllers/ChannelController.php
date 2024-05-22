@@ -52,7 +52,7 @@ public function getChannelPosts(Request $request){
     }
 
     public function getAllChannels(Request $request){
-        $channels = Channel::all();
+        $channels = Channel::where('is_public', '!=', 0)->get();
         return response()->json([
             'channels'=>$channels
         ]);
