@@ -69,6 +69,8 @@ class PostController extends Controller
             $newPost->save();
         }
 
+        
+
         $success = response()->json([
             "message" => 'Post created',
             'post' => $newPost
@@ -78,8 +80,6 @@ class PostController extends Controller
         ], 400);
 
         return $saved?$success:$error;
-        //$this->createRecipe($request);
-        //response()->json([ "message" => $type.' is not a valid type'], 400);
     }
 
     function deletePost(Request $request){
