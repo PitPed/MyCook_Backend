@@ -16,9 +16,15 @@ class Channel extends Model
     protected $guarded = ['channel_id'];
     protected $fillable = ['name', 'is_public', 'open_posting'];
 
-    public function posts(): HasManyThrough
+
+    public function postChannels()
     {
-        return $this->hasManyThrough(Post::class, PostChannel::class, 'channel_id', 'post_id');
+        return $this->hasMany(PostChannel::class, 'channel_id', 'channel_id');
+    }
+
+    public function posts()
+    {
+        return $this->hasManyThrough(Post::class, PostChannel::class, 'channel_id', 'post_id', 'channel_id', 'post_id');
     }
 
     public function members(): HasMany

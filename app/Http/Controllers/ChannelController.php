@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\Channel;
 use App\Models\Vote;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 
 class ChannelController extends Controller
@@ -34,7 +35,10 @@ class ChannelController extends Controller
     }
 
 public function getChannelPosts(Request $request){
+    DB::enableQueryLog();
     $channel = Channel::with('posts', 'posts.user', 'posts.images')->find($request->id);
+    $queries = DB::getQueryLog();
+    //dd($queries);
     if(!$channel){
         return response()->json(['message'=>'El canal no existe']);
     }

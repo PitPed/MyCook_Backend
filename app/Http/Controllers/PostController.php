@@ -34,7 +34,7 @@ class PostController extends Controller
         $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
         $post->voted = $voted?$voted->liked:null;
         if($post->recipe!=null){
-            $post->recipe->calculateCalories();
+            $post->recipe->calculateNutrition();
         }
         return  $post!= null
         ? response()->json([

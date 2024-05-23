@@ -42,7 +42,40 @@ class Recipe extends Model
         return $this->hasManyThrough(Ingredient::class, RecipeIngredient::class, 'recipe_id', 'ingredient_id');
     }
 
-    public function calculateCalories(){
-        $this->calories = 1;
+    public function calculateNutrition(){
+        $this->totalMass = $this->recipeIngredients->sum(function ($ingredient) {
+            return $ingredient->quantity * $ingredient->measurement->equals_to;
+        });
+        $this->nutritionPer100g = [
+            "calories" => $this->recipeIngredients->sum(function ($ingredient) {
+                $mass = $ingredient->quantity * $ingredient->measurement->equals_to;
+                return $ingredient->ingredient->calories * $mass / $this->totalMass;
+            }),
+            "carbohydrates" => $this->recipeIngredients->sum(function ($ingredient) {
+                $mass = $ingredient->quantity * $ingredient->measurement->equals_to;
+                return $ingredient->ingredient->carbohydrates * $mass / $this->totalMass;
+            }),
+            "sugars" => $this->recipeIngredients->sum(function ($ingredient) {
+                $mass = $ingredient->quantity * $ingredient->measurement->equals_to;
+                return $ingredient->ingredient->sugars * $mass / $this->totalMass;
+            }),
+            "fat" => $this->recipeIngredients->sum(function ($ingredient) {
+                $mass = $ingredient->quantity * $ingredient->measurement->equals_to;
+                return $ingredient->ingredient->fat * $mass / $this->totalMass;
+            }),
+            "saturated" => $this->recipeIngredients->sum(function ($ingredient) {
+                $mass = $ingredient->quantity * $ingredient->measurement->equals_to;
+                return $ingredient->ingredient->saturated * $mass / $this->totalMass;
+            }),
+            "protein" => $this->recipeIngredients->sum(function ($ingredient) {
+                $mass = $ingredient->quantity * $ingredient->measurement->equals_to;
+                return $ingredient->ingredient->protein * $mass / $this->totalMass;
+            }),
+            "salt" => $this->recipeIngredients->sum(function ($ingredient) {
+                $mass = $ingredient->quantity * $ingredient->measurement->equals_to;
+                return $ingredient->ingredient->salt * $mass / $this->totalMass;
+            })
+        ];
+        
     }
 }
