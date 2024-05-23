@@ -28,7 +28,7 @@ class PostController extends Controller
     }
 
     function getPost(Request $request){
-        $post = Post::with('user', 'images', 'comments','comments.user')->find($request->id);
+        $post = Post::with('user', 'images', 'comments','comments.user', 'recipe', 'recipe.ingredients', 'recipe.steps')->find($request->id);
         $post->votes = $post->votesNumber();
         $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
         $post->voted = $voted?$voted->liked:null;

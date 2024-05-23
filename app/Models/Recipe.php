@@ -21,10 +21,6 @@ class Recipe extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function recipeIngredients(): HasMany
-    {
-        return $this->hasMany(RecipeIngredient::class);
-    }
 
     public function tags(): HasMany
     {
@@ -33,11 +29,11 @@ class Recipe extends Model
 
     public function steps(): HasMany
     {
-        return $this->hasMany(Step::class);
+        return $this->hasMany(Step::class, 'recipe_id');
     }
 
     public function ingredients(): HasManyThrough 
     {
-        return $this->hasManyThrough(Ingredient::class, RecipeIngredient::class);
+        return $this->hasManyThrough(Ingredient::class, RecipeIngredient::class, 'recipe_id', 'ingredient_id');
     }
 }

@@ -20,7 +20,7 @@ class Post extends Model
     const CREATED_AT = 'date';
 
     public function recipe(): HasOne{
-        return $this->hasOne(Recipe::class);
+        return $this->hasOne(Recipe::class, 'post_id');
     }
 
     public function comments(): HasMany
