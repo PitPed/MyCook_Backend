@@ -32,8 +32,17 @@ class Recipe extends Model
         return $this->hasMany(Step::class, 'recipe_id');
     }
 
+    public function recipeIngredients(): HasMany
+    {
+        return $this->hasMany(RecipeIngredient::class, 'recipe_id');
+    }
+
     public function ingredients(): HasManyThrough 
     {
         return $this->hasManyThrough(Ingredient::class, RecipeIngredient::class, 'recipe_id', 'ingredient_id');
+    }
+
+    public function calculateCalories(){
+        $this->calories = 1;
     }
 }

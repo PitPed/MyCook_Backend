@@ -28,10 +28,13 @@ class PostController extends Controller
     }
 
     function getPost(Request $request){
-        $post = Post::with('user', 'images', 'comments','comments.user', 'recipe', 'recipe.ingredients', 'recipe.steps')->find($request->id);
+        $post = Post::with('user', 'images', 'comments','comments.user', 'recipe', 'recipe.recipeIngredients', 'recipe.recipeIngredients.ingredient', 'recipe.recipeIngredients.measurement', 'recipe.steps')->find($request->id);
         $post->votes = $post->votesNumber();
         $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
         $post->voted = $voted?$voted->liked:null;
+        if($post->recipe!=null){
+            $post->recipe->calculateCalories();
+        }
         return  $post!= null
         ? response()->json([
             "post" => $post,
@@ -58,6 +61,13 @@ class PostController extends Controller
             'body'=>$request->get('description'),
         ]);
 
+        if($request->has('recipe')){
+            $recipe=json_decode($request->get('recipe'));
+            $newPost->recipe()->create(['duration'=>$recipe->duration,'difficulty'=>$recipe->difficulty, 'quantity'=>$recipe->quantity]);
+            foreach($recipe->ingredients as $ingredient){
+                $newPost->recipe->recipeIngredients()->create(['recipe_id'=>$newPost->recipe->recipe_id, 'ingredient_id'=>$ingredient->ingredient_id, 'measurement_id'=>$ingredient->measurement_id, 'quantity'=>$ingredient->quantity]);
+            }
+        }
 
         $saved = $newPost->save();
         if ($saved) {
