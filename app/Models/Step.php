@@ -13,8 +13,8 @@ class Step extends Model
     protected $table = 'steps';
     protected $primaryKey = 'step_id';
     public $timestamps = false;
-    protected $guarded = ['step_id', 'title', 'description', 'time'];
-    protected $fillable = ['name'];
+    protected $guarded = ['step_id', 'title', 'description', 'time', 'method_id'];
+    protected $fillable = ['title', 'description', 'time', 'method_id'];
 
     public function recipe(): BelongsTo
     {
@@ -23,6 +23,6 @@ class Step extends Model
 
     public function method(): HasOne
     {
-        return $this->hasOne(Method::class);
+        return $this->hasOne(Method::class, 'method_id');
     }
 }

@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Measurement;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class RecipeIngredient extends Model
@@ -17,15 +17,15 @@ class RecipeIngredient extends Model
     protected $primaryKey = 'recipe_ingredient_id';
     public $timestamps = false;
     protected $guarded = ['recipe_ingredient_id', 'recipe_id', 'ingredient_id', 'measurement_id', 'quantity'];
-    protected $fillable = ['quantity'];
+    protected $fillable = ['quantity', 'recipe_id', 'ingredient_id', 'measurement_id'];
 
     /*
     Revisar, es belongs?
     */
 
-    public function ingredient(): HasOne
+    public function ingredient(): BelongsTo
     {
-        return $this->hasOne(Ingredient::class, 'ingredient_id');
+        return $this->belongsTo(Ingredient::class, 'ingredient_id', 'ingredient_id');
     }
 
     public function recipes(): HasMany
@@ -33,8 +33,8 @@ class RecipeIngredient extends Model
         return $this->hasMany(Recipe::class);
     }
 
-    public function measurement(): HasOne
+    public function measurement(): BelongsTo
     {
-        return $this->hasOne(Measurement::class, 'measurement_id');
+        return $this->belongsTo(Measurement::class, 'measurement_id', 'measurement_id');
     }
 }

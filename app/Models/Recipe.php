@@ -15,7 +15,7 @@ class Recipe extends Model
     protected $primaryKey = 'recipe_id';
     public $timestamps = false;
     protected $guarded = ['recipe_id'];
-    protected $fillable = ['duration','difficulty', 'quantity'];
+    protected $fillable = ['duration','difficulty', 'quantity', 'recipeIngredients'];
 
     public function post(): BelongsTo{
         return $this->belongsTo(Post::class);

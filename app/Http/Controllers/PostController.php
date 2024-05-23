@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Models\User;
+use App\Models\RecipeIngredient;
 use App\Models\Vote;
+use Illuminate\Support\Facades\DB;
 
 
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class PostController extends Controller
     }
 
     function getPost(Request $request){
-        $post = Post::with('user', 'images', 'comments','comments.user', 'recipe', 'recipe.recipeIngredients', 'recipe.recipeIngredients.ingredient', 'recipe.recipeIngredients.measurement', 'recipe.steps')->find($request->id);
+        $post = Post::with('user', 'images', 'comments','comments.user', 'recipe', 'recipe.recipeIngredients', 'recipe.recipeIngredients.ingredient', 'recipe.recipeIngredients.measurement', 'recipe.steps', 'recipe.steps.method')->find($request->id);
         $post->votes = $post->votesNumber();
         $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
         $post->voted = $voted?$voted->liked:null;
@@ -64,9 +65,13 @@ class PostController extends Controller
         if($request->has('recipe')){
             $recipe=json_decode($request->get('recipe'));
             $newPost->recipe()->create(['duration'=>$recipe->duration,'difficulty'=>$recipe->difficulty, 'quantity'=>$recipe->quantity]);
-            foreach($recipe->ingredients as $ingredient){
-                $newPost->recipe->recipeIngredients()->create(['recipe_id'=>$newPost->recipe->recipe_id, 'ingredient_id'=>$ingredient->ingredient_id, 'measurement_id'=>$ingredient->measurement_id, 'quantity'=>$ingredient->quantity]);
+            foreach($recipe->recipe_ingredients as $recipe_ingredient){
+                $newPost->recipe->recipeIngredients()->create(['recipe_id'=>$newPost->recipe->recipe_id, 'ingredient_id'=>$recipe_ingredient->ingredient->ingredient_id, 'measurement_id'=>$recipe_ingredient->measurement->measurement_id, 'quantity'=>$recipe_ingredient->quantity]);
             }
+            foreach($recipe->steps as $step){
+                $newStep=$newPost->recipe->steps()->create(['title'=>$step->title, 'description'=>$step->description, 'time'=>$step->time, 'method_id'=>$step->method->method_id]);
+            }
+            $newPost->save();
         }
 
         $saved = $newPost->save();

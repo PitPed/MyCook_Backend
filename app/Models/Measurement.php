@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Measurement extends Model
 {
@@ -15,8 +15,8 @@ class Measurement extends Model
     protected $guarded = ['measurement_id'];
     protected $fillable = ['name', 'type'];
 
-    public function recipeIngredients(): BelongsToMany
+    public function recipeIngredients(): HasMany
     {
-        return $this->belongsToMany(RecipeIngredient::class);
+        return $this->hasMany(RecipeIngredient::class, 'measurement_id', 'measurement_id');
     }
 }
