@@ -1,3 +1,5 @@
+DROP DATABASE mycook;
+CREATE DATABASE mycook;
 USE mycook;
 
 -- Tabla users (user_id, name, email, password)
@@ -33,7 +35,8 @@ CREATE TABLE channels (
 CREATE TABLE measurements (
     measurement_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    type ENUM('volume', 'weight')
+    type ENUM('volume', 'weight'),
+    equals_to DECIMAL NOT NULL
 );
 
 -- Tabla methods (method_id, name)
@@ -177,18 +180,12 @@ CREATE TABLE steps (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     time TIME NOT NULL,
+    recipe_id INT UNSIGNED,
     method_id INT UNSIGNED,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
     FOREIGN KEY (method_id) REFERENCES methods(method_id)
 );
 
--- Tabla recipe_steps (recipe_steps_id(PK), recipe_id(FK), step_id(FK))
-CREATE TABLE recipe_steps (
-    recipe_steps_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    recipe_id INT UNSIGNED NOT NULL,
-    step_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
-    FOREIGN KEY (step_id) REFERENCES steps(step_id)
-);
 
 -- Tabla post_images (post_image_id(PK), post_id(FK), image_id(FK))
 CREATE TABLE post_images (

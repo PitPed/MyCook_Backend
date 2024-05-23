@@ -1,3 +1,5 @@
+USE mycook;
+
 INSERT INTO users (name, email, password) VALUES
 ('Anon', 'anon@example.com', 'password123'),
 ('Maria', 'maria@example.com', 'securepass'),
@@ -34,17 +36,17 @@ INSERT INTO channels (name, is_public, open_posting) VALUES
 ('Seafood', TRUE, TRUE),
 ('Slow Cooker', TRUE, TRUE);
 
-INSERT INTO measurements (name, type) VALUES
-('Teaspoon', 'volume'),
-('Tablespoon', 'volume'),
-('Cup', 'volume'),
-('Gram', 'weight'),
-('Ounce', 'weight'),
-('Pound', 'weight'),
-('Milliliter', 'volume'),
-('Liter', 'volume'),
-('Kilogram', 'weight'),
-('Fluid Ounce', 'volume');
+INSERT INTO measurements (name, type, equals_to) VALUES
+('Teaspoon', 'volume', 5),
+('Tablespoon', 'volume', 15),
+('Cup', 'volume', 240),
+('Gram', 'weight', 1),
+('Ounce', 'weight', 28.35),
+('Pound', 'weight', 453.59),
+('Milliliter', 'volume', 1),
+('Liter', 'volume', 1000),
+('Kilogram', 'weight', 1000),
+('Fluid Ounce', 'volume', 29.57);
 
 INSERT INTO methods (name) VALUES
 ('Boiling'),
@@ -236,17 +238,17 @@ INSERT INTO menu_recipes (menu_id, recipe_id, day, meal) VALUES
 (9, 8, 9, 3),
 (10, 10, 10, 1);
 
-INSERT INTO steps (title, description, time, method_id) VALUES
-('Chop Tomatoes', 'Dice the tomatoes into small pieces.', '00:10:00', 4),
-('Marinate Chicken', 'Marinate the chicken with spices and let it sit for 30 minutes.', '00:30:00', 7),
-('Season Salmon', 'Season the salmon fillets with salt, pepper, and lemon juice.', '00:05:00', 4),
-('Prepare Ingredients', 'Chop vegetables and gather all ingredients.', '00:15:00', 10),
-('Mix Dough', 'Combine flour, water, yeast, and salt in a bowl.', '00:20:00', 10),
-('Blend Ingredients', 'Combine all ingredients in a blender and blend until smooth.', '00:05:00', 10),
-('Cook Pasta', 'Boil water and cook pasta according to package instructions.', '00:12:00', 1),
-('Knead Dough', 'Knead the dough on a floured surface until smooth and elastic.', '00:15:00', 10),
-('Grill Shrimp', 'Grill the shrimp skewers for 3-4 minutes on each side.', '00:08:00', 2),
-('Roast Turkey', 'Roast the turkey in the oven at 350°F for 3-4 hours, basting occasionally.', '03:30:00', 5);
+INSERT INTO steps (title, description, time, recipe_id, method_id) VALUES
+('Chop Tomatoes', 'Dice the tomatoes into small pieces.', '00:10:00', 1, 4),
+('Marinate Chicken', 'Marinate the chicken with spices and let it sit for 30 minutes.', '00:30:00', 2, 7),
+('Season Salmon', 'Season the salmon fillets with salt, pepper, and lemon juice.', '00:05:00', 3, 4),
+('Prepare Ingredients', 'Chop vegetables and gather all ingredients.', '00:15:00', 4, 10),
+('Mix Dough', 'Combine flour, water, yeast, and salt in a bowl.', '00:20:00', 5, 10),
+('Blend Ingredients', 'Combine all ingredients in a blender and blend until smooth.', '00:05:00', 6, 10),
+('Cook Pasta', 'Boil water and cook pasta according to package instructions.', '00:12:00', 7, 1),
+('Knead Dough', 'Knead the dough on a floured surface until smooth and elastic.', '00:15:00', 8, 10),
+('Grill Shrimp', 'Grill the shrimp skewers for 3-4 minutes on each side.', '00:08:00', 9, 2),
+('Roast Turkey', 'Roast the turkey in the oven at 350°F for 3-4 hours, basting occasionally.', '03:30:00', 10, 5);
 
 INSERT INTO post_images (post_id, image_id) VALUES
 (1, 1),
@@ -283,15 +285,3 @@ INSERT INTO step_images (step_id, image_id) VALUES
 (8, 8),
 (9, 9),
 (10, 10);
-
-INSERT INTO recipe_steps (recipe_id, step_id) VALUES
-(1, 1),
-(1, 2),
-(1, 3),
-(2, 4),
-(2, 5),
-(3, 6),
-(3, 7),
-(4, 8),
-(4, 9),
-(5, 10);
