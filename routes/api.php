@@ -5,7 +5,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChannelController;
-use App\Http\Controllers\MethodController;
+use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\IngredientController;
 
 use Illuminate\Http\Request;
@@ -60,8 +60,10 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::get('/channels/followedBy/{id}',[ChannelController::class, 'getFollowedBy']);
     Route::get('/channels/addPost/{channel}/{post}',[ChannelController::class,'addPostToChannel']);
     
-    Route::get('/methods/all',[MethodController::class,'getAllMethods']);
-    Route::get('/methods/like/{name}',[MethodController::class,'getMethodsLike']);
+    Route::get('/methods/all',[GeneralController::class,'getAllMethods']);
+    Route::get('/methods/like/{name}',[GeneralController::class,'getMethodsLike']);
+
+    Route::get('/measurements/all',[GeneralController::class,'getAllMeasurements']);
 
     Route::get('/ingredients/all/',[IngredientController::class,'getAllIngredients']);
     Route::get('/ingredients/like/{name}',[IngredientController::class,'getIngredientsLike']);
