@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Member extends Model
 {
@@ -15,13 +15,13 @@ class Member extends Model
     protected $guarded = ['member_id', 'user_id', 'group_id'];
     protected $fillable = ['rol'];
 
-    public function users(): BelongsToMany
+    public function users(): BelongsTo
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    public function channels(): BelongsToMany
+    public function channels(): BelongsTo
     {
-        return $this->belongsToMany(Channel::class);
+        return $this->belongsTo(Channel::class, 'channel_id', 'channel_id');
     }
 }

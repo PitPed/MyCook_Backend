@@ -9,6 +9,9 @@ use App\Models\Channel;
 use App\Models\Vote;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+
+
 
 
 class ChannelController extends Controller
@@ -35,21 +38,26 @@ class ChannelController extends Controller
     }
 
 public function getChannelPosts(Request $request){
-    DB::enableQueryLog();
     $channel = Channel::with('posts', 'posts.user', 'posts.images')->find($request->id);
-    $queries = DB::getQueryLog();
-    //dd($queries);
     if(!$channel){
         return response()->json(['message'=>'El canal no existe']);
     }
+    $posts = $channel->posts;
+    foreach($posts as $post){
+        $post->votes = $post->votesNumber();
+        $voted = Vote::where(['user_id'=> Session::has('user')?Session::get('user'):1,'post_id'=> $post->post_id])->first();
+        $post->voted = $voted?$voted->liked:null;
+    }
     return response()->json([
-        'posts'=>$channel->posts
+        'posts'=>$posts
     ]);
 }
 
 
     public function getFollowedBy(Request $request){
+        DB::enableQueryLog();
         $channels = User::find($request->id)->channels;
+        dd(DB::getQueryLog());
         return response()->json([
             'channels'=>$channels
         ]);

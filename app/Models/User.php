@@ -34,7 +34,7 @@ class User extends Model
 
     public function members(): HasMany 
     {
-        return $this->hasMany(Post::class);
+        return $this->hasMany(Member::class, 'user_id');
     }
 
     public function channels(): HasManyThrough 

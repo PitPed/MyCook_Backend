@@ -29,11 +29,11 @@ class Channel extends Model
 
     public function members(): HasMany
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Member::class, 'channel_id', 'channel_id');
     }
 
     public function users(): HasManyThrough 
     {
-        return $this->hasManyThrough(User::class, Member::class);
+        return $this->hasManyThrough(User::class, Member::class, 'member_id', 'channel_id');
     }
 }
