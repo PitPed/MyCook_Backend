@@ -19,6 +19,11 @@ class Post extends Model
     protected $fillable = ['user_id', 'title', 'body', 'user', 'votes','voted'];
     const CREATED_AT = 'date';
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function recipe(): HasOne{
         return $this->hasOne(Recipe::class, 'post_id');
     }
@@ -33,29 +38,24 @@ class Post extends Model
         return $this->hasMany(PostImage::class, 'post_id');
     }
 
-    public function images(): HasManyThrough
-    {
-        return $this->hasManyThrough(Image::class,PostImage::class, 'post_id', 'image_id');
-    }
-
-    public function postChannels()
+    public function postChannels(): HasMany
     {
         return $this->hasMany(PostChannel::class, 'post_id', 'post_id');
-    }
-
-    public function channels()
-    {
-        return $this->hasManyThrough(Channel::class, PostChannel::class, 'post_id', 'channel_id');
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function votesRelation(): HasMany
     {
         return $this->hasMany(Vote::class, 'post_id');
+    }
+
+    public function images(): HasManyThrough
+    {
+        return $this->hasManyThrough(Image::class,PostImage::class, 'post_id', 'image_id');
+    }
+
+    public function channels(): HasManyThrough
+    {
+        return $this->hasManyThrough(Channel::class, PostChannel::class, 'post_id', 'channel_id');
     }
 
     public function votesNumber():int{
