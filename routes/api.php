@@ -48,6 +48,8 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::get('/post/postedBy/{id}',[ChannelController::class, 'getPostedBy']);
     Route::get('/post/likedBy/{id}',[ChannelController::class, 'getLikedBy']);
     Route::post('/post/create/', [PostController::class, 'create']);
+    Route::post('/post/comment/{post_id}', [PostController::class, 'commentPost']);
+
     
     Route::get('/post/deleteRange/{first}/{last}', [PostController::class, 'deletePostRange']);
 

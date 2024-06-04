@@ -151,9 +151,9 @@ class PostController extends Controller
     public function commentPost(Request $request){
         $comment = Comment::create([
             'user_id'=> Session::get('user'),
-            'post_id'=> $request->id,
-            'body' => $request->body
+            'post_id'=> $request->post_id,
+            'body' => $request->get('body')
         ]);
-        return response()->json(['message'=>'Commented', 'comment'=> $comment],200);
+        return response()->json(['message'=>'Commented succesfully', 'comment'=> $comment],200);
     }
 }
