@@ -67,10 +67,10 @@ class PostController extends Controller
             $recipe=json_decode($request->get('recipe'));
             $newPost->recipe()->create(['duration'=>$recipe->duration,'difficulty'=>$recipe->difficulty, 'quantity'=>$recipe->quantity]);
             foreach($recipe->recipe_ingredients as $recipe_ingredient){
-                $newPost->recipe->recipeIngredients()->create(['recipe_id'=>$newPost->recipe->recipe_id, 'ingredient_id'=>$recipe_ingredient->ingredient->ingredient_id, 'measurement_id'=>$recipe_ingredient->measurement->measurement_id, 'quantity'=>$recipe_ingredient->quantity]);
+                $newPost->recipe->recipeIngredients()->create(['recipe_id'=>$newPost->recipe->recipe_id, 'ingredient_id'=>$recipe_ingredient->ingredient->ingredient_id, 'measurement_id'=>$recipe_ingredient->measurement->measurement_id, 'quantity'=>$recipe_ingredient->quantity/$recipe->quantity]);
             }
             foreach($recipe->steps as $step){
-                $newStep=$newPost->recipe->steps()->create(['title'=>$step->title, 'description'=>$step->description, 'time'=>$step->time, 'method_id'=>$step->method->method_id]);
+                $newPost->recipe->steps()->create(['title'=>$step->title, 'description'=>$step->description, 'time'=>$step->time, 'method_id'=>$step->method->method_id]);
             }
             $newPost->save();
         }
