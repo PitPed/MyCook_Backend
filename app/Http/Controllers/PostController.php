@@ -118,7 +118,12 @@ class PostController extends Controller
     }
 
     function getPostsLike(Request $request){
-        $posts = Post::where('title', 'LIKE', "%$request->title%")->orderByDesc('post_id')->get();
+        $posts = Post::where('title', 'LIKE', "%$request->title%")->with('user', 'images', 'comments','comments.user')->orderByDesc('post_id')->get();
+        foreach($posts as $post){
+            $post->votes = $post->votesNumber();
+            $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
+            $post->voted = $voted?$voted->liked:null;
+        }
         return response()->json([
             "posts" => $posts
         ], 200);
