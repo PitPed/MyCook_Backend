@@ -45,7 +45,9 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::get('/post/get/{id}', [PostController::class, 'getPost']);
     Route::get('/post/like/{title}', [PostController::class, 'getPostsLike']);
     Route::get('/post/delete/{id}', [PostController::class, 'deletePost']);
+    Route::get('/post/postedBy/',[ChannelController::class, 'getPostedBy']);
     Route::get('/post/postedBy/{id}',[ChannelController::class, 'getPostedBy']);
+    Route::get('/post/likedBy/',[ChannelController::class, 'getLikedBy']);
     Route::get('/post/likedBy/{id}',[ChannelController::class, 'getLikedBy']);
     Route::post('/post/create/', [PostController::class, 'create']);
     Route::post('/post/comment/{post_id}', [PostController::class, 'commentPost']);
