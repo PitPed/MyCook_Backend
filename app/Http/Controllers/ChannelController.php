@@ -71,6 +71,9 @@ public function getChannelPosts(Request $request){
             $channels[] = $member->channels;
         }
         //dd($channels);
+        foreach($channels as $channel){
+            $channel->amIMember();
+        }
         return response()->json([
             'channels'=>$channels
         ]);
@@ -78,9 +81,22 @@ public function getChannelPosts(Request $request){
 
     public function getAllChannels(Request $request){
         $channels = Channel::where('is_public', '!=', 0)->get();
+        foreach($channels as $channel){
+            $channel->amIMember();
+        }
         return response()->json([
             'channels'=>$channels
         ]);
+    }
+
+    function getChannelsLike(Request $request){
+        $channels = Channel::where('name', 'LIKE', "%$request->name%")->orderBy('name')->get();
+        foreach($channels as $channel){
+            $channel->amIMember();
+        }
+        return response()->json([
+            "channels" => $channels
+        ], 200);
     }
 
     public function addPostToChannel(Request $request){

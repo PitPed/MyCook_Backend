@@ -58,6 +58,7 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
 
     
     Route::get('/channels/all/',[ChannelController::class, 'getAllChannels']);
+    Route::get('/channels/like/{name}',[ChannelController::class, 'getChannelsLike']);
     Route::get('/channels/getPosts/{id}',[ChannelController::class, 'getChannelPosts']);
     Route::get('/channels/followedBy/',[ChannelController::class, 'getFollowedBy']);
     Route::get('/channels/followedBy/{id}',[ChannelController::class, 'getFollowedBy']);
