@@ -8,10 +8,19 @@ use App\Models\Post;
 use App\Models\Channel;
 use App\Models\Vote;
 use App\Models\User;
+use App\Models\Member;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
-
+function addUserToChannel($user_id, $channel_id){
+    $member = Member::firstOrNew([
+        'user_id'=> $user_id,
+        'channel_id'=> $channel_id,
+    ]);
+    $member->rol = 'manager';
+    $member->save();
+    return true;
+}
 
 
 class ChannelController extends Controller
@@ -45,7 +54,7 @@ public function getChannelPosts(Request $request){
     $posts = $channel->posts;
     foreach($posts as $post){
         $post->votes = $post->votesNumber();
-        $voted = Vote::where(['user_id'=> Session::has('user')?Session::get('user'):1,'post_id'=> $post->post_id])->first();
+        $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
         $post->voted = $voted?$voted->liked:null;
     }
     return response()->json([
@@ -55,9 +64,13 @@ public function getChannelPosts(Request $request){
 
 
     public function getFollowedBy(Request $request){
-        DB::enableQueryLog();
-        $channels = User::find($request->id)->channels;
-        dd(DB::getQueryLog());
+        $user_id = $request->id!=null? $request->id : Session::get('user');
+        $members = Member::where('user_id',$user_id)->get();
+        $channels =[];
+        foreach($members as $member){
+            $channels[] = $member->channels;
+        }
+        //dd($channels);
         return response()->json([
             'channels'=>$channels
         ]);
@@ -77,8 +90,24 @@ public function getChannelPosts(Request $request){
             'channel_id'=>$request->channel
         ]);
         return response()->json(['message'=>'Post added to channel']);
-    }catch(\Exception $e){
-        return response()->json(['message'=> 'Error: The post can not be added to the channel'], 400);
+        }catch(\Exception $e){
+            return response()->json(['message'=> 'Error: The post can not be added to the channel'], 400);
+        }
     }
-}
+
+    public function createChannel(Request $request){
+        if(Channel::where('name', $request->name)->exists()){
+            return response()->json(['message'=> 'That channel name is being used'],400);
+        }
+
+        $channel = Channel::create(['name'=> $request->name, 'is_public'=> true, 'open_posting'=>true]);
+        addUserToChannel(Session::get('user'), $channel->channel_id);
+        return response()->json(['message'=>'The channel has been created! You are now a member']);
+    }
+
+    public function joinChannel(Request $request){
+        addUserToChannel(Session::get('user'), $request->id);
+        return response()->json(['message'=> 'Joined the channel succesfully!'], 200);
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\RecipeIngredient;
 use App\Models\Vote;
@@ -19,7 +20,7 @@ class PostController extends Controller
         $posts = Post::with('user', 'images', 'comments','comments.user')->orderByDesc('post_id')->get();
         foreach($posts as $post){
             $post->votes = $post->votesNumber();
-            $voted = Vote::where(['user_id'=> Session::has('user')?Session::get('user'):1,'post_id'=> $post->post_id])->first();
+            $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
             $post->voted = $voted?$voted->liked:null;
         }
         return response()->json([
@@ -57,7 +58,7 @@ class PostController extends Controller
 
     function create(Request $request){
         $newPost = Post::create([
-            'user_id'=>Session::has('user')?Session::get('user'):1,
+            'user_id'=>Session::get('user'),
             'title'=>$request->get('title'),
             'body'=>$request->get('description'),
         ]);
@@ -125,21 +126,34 @@ class PostController extends Controller
 
     public function votePost(Request $request){
         $vote = Vote::where([
-            'user_id'=> Session::has('user') ? Session::get('user') : 1,
+            'user_id'=> Session::get('user'),
             'post_id'=> $request->id,
         ])->first();
     
         if ($vote == null) {
             $vote = Vote::create([
-                'user_id'=> Session::has('user') ? Session::get('user') : 1,
+                'user_id'=> Session::get('user'),
                 'post_id'=> $request->id,
                 'liked' => $request->liked
             ]);
-        } else {
+            return response()->json(['message'=>'Voted', 'vote'=> $vote],200);
+
+        } 
+        if($vote->liked == $request->liked){
+            $vote->delete();
+        }else{
             $vote->liked = $request->liked;
             $vote->save();
         }
-    
         return response()->json(['message'=>'Voted', 'vote'=> $vote],200);
+    }
+
+    public function commentPost(Request $request){
+        $comment = Comment::create([
+            'user_id'=> Session::get('user'),
+            'post_id'=> $request->id,
+            'body' => $request->body
+        ]);
+        return response()->json(['message'=>'Commented', 'comment'=> $comment],200);
     }
 }

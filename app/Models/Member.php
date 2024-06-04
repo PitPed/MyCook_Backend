@@ -12,8 +12,8 @@ class Member extends Model
     protected $table = 'members';
     protected $primaryKey = 'member_id';
     public $timestamps = false;
-    protected $guarded = ['member_id', 'user_id', 'group_id'];
-    protected $fillable = ['rol'];
+    protected $guarded = ['member_id', 'user_id', 'channel_id'];
+    protected $fillable = ['rol', 'user_id', 'channel_id'];
 
     public function users(): BelongsTo
     {

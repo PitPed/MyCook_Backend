@@ -17,10 +17,14 @@ class SessionHandler
      */
     public function handle(Request $request, Closure $next): Response
     {
+        
         $request->whenHas('sessionId', function($id){
             Session::setId($id);
-            Session::start();
         });
+        Session::start();
+        if(!Session::has('user')){
+            Session::put('user', 1);
+        }
         return $next($request);
     }
 }

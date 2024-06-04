@@ -57,8 +57,12 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     
     Route::get('/channels/all/',[ChannelController::class, 'getAllChannels']);
     Route::get('/channels/getPosts/{id}',[ChannelController::class, 'getChannelPosts']);
+    Route::get('/channels/followedBy/',[ChannelController::class, 'getFollowedBy']);
     Route::get('/channels/followedBy/{id}',[ChannelController::class, 'getFollowedBy']);
     Route::get('/channels/addPost/{channel}/{post}',[ChannelController::class,'addPostToChannel']);
+    Route::get('/channels/create/{name}',[ChannelController::class,'createChannel']);
+    Route::get('/channels/join/{id}',[ChannelController::class,'joinChannel']);
+    
     
     Route::get('/methods/all',[GeneralController::class,'getAllMethods']);
     Route::get('/methods/like/{name}',[GeneralController::class,'getMethodsLike']);
@@ -67,6 +71,5 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
 
     Route::get('/ingredients/all/',[IngredientController::class,'getAllIngredients']);
     Route::get('/ingredients/like/{name}',[IngredientController::class,'getIngredientsLike']);
-
 });
 
