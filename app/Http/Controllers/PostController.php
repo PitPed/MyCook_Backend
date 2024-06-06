@@ -92,6 +92,10 @@ class PostController extends Controller
         $newPost->load('user', 'images', 'comments','comments.user', 'recipe', 'recipe.recipeIngredients',
         'recipe.recipeIngredients.ingredient', 'recipe.recipeIngredients.measurement', 'recipe.steps', 'recipe.steps.method');
 
+        if($newPost->recipe!=null){
+            $newPost->recipe->calculateNutrition();
+        }
+
         $success = response()->json([
             "message" => 'Post created',
             'post' => $newPost        ], 200);
@@ -156,7 +160,9 @@ class PostController extends Controller
         }
         $post->load('user', 'images', 'comments','comments.user', 'recipe', 'recipe.recipeIngredients',
          'recipe.recipeIngredients.ingredient', 'recipe.recipeIngredients.measurement', 'recipe.steps', 'recipe.steps.method');
-
+         if($post->recipe!=null){
+            $post->recipe->calculateNutrition();
+        }
         return response()->json([
             "message" => 'Post updated',
             'post' => $post
