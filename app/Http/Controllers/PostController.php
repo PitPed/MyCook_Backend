@@ -153,6 +153,11 @@ class PostController extends Controller
             
             }
         }
+
+        return response()->json([
+            "message" => 'Post updated',
+            'post' => $post
+        ], 200);
     }
 
     function deletePost(Request $request){
