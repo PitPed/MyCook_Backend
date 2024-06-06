@@ -66,16 +66,12 @@ class PostController extends Controller
         if($request->has('recipe') && $request->get('recipe')!=null){
             $recipe=json_decode($request->get('recipe'));
             $newPost->recipe()->create(['duration'=>$recipe->duration,'difficulty'=>$recipe->difficulty, 'quantity'=>$recipe->quantity]);
-            if($recipe->recipeIngredients!= null){
-                foreach($recipe->recipeIngredients as $recipeIngredient){
-                    $newPost->recipe->recipeIngredients()->create(['recipe_id'=>$newPost->recipe->recipe_id, 'ingredient_id'=>$recipeIngredient->ingredient->ingredient_id, 'measurement_id'=>$recipeIngredient->measurement->measurement_id, 'quantity'=>$recipeIngredient->quantity/$recipe->quantity]);
-                }
+            foreach($recipe->recipeIngredients as $recipeIngredient){
+                $newPost->recipe->recipeIngredients()->create(['recipe_id'=>$newPost->recipe->recipe_id, 'ingredient_id'=>$recipeIngredient->ingredient->ingredient_id, 'measurement_id'=>$recipeIngredient->measurement->measurement_id, 'quantity'=>$recipeIngredient->quantity/$recipe->quantity]);
             }
-            if($recipe->steps!=null){
-                foreach($recipe->steps as $step){
-                    $newPost->recipe->steps()->create(['title'=>$step->title, 'description'=>$step->description, 'time'=>$step->time, 'method_id'=>$step->method->method_id]);
-                }
-            }
+            /* foreach($recipe->steps as $step){
+                $newPost->recipe->steps()->create(['title'=>$step->title, 'description'=>$step->description, 'time'=>$step->time, 'method_id'=>$step->method->method_id]);
+            } */
             $newPost->save();
         }
 
@@ -88,6 +84,7 @@ class PostController extends Controller
             }
             $newPost->save();
         }
+
         
 
         $success = response()->json([
