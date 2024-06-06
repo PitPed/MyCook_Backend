@@ -101,6 +101,60 @@ class PostController extends Controller
         return $saved?$success:$error;
     }
 
+    function updatePost(Request $request){
+        $post = Post::findOrFail($request->post_id);
+
+        if($post->user_id != Session::get('user')){
+            return response()->json([ "message" => 'The post must be yours to update it'], 400);
+        }
+        $post->title = $request->get('title');
+        $post->body = $request->get('description');
+
+        // Guarda los cambios en el post principal
+        $post->save();
+
+        // Actualiza la receta, si se proporciona
+        if($request->has('recipe') && $request->get('recipe') != null){
+            $recipe = json_decode($request->get('recipe'));
+
+            // Si la receta ya existe, actualiza sus campos
+            if($post->recipe){
+                $post->recipe->update([
+                    'duration' => $recipe->duration,
+                    'difficulty' => $recipe->difficulty,
+                    'quantity' => $recipe->quantity
+                ]);
+
+                // Actualiza los ingredientes de la receta, si están presentes
+                if($recipe->recipe_ingredients){
+                    $current_ingredients = [];
+                    foreach($recipe->recipe_ingredients as $recipeIngredient){
+                        $current_ingredients[] = $recipeIngredient->ingredient->ingredient_id;
+                        $existingIngredient = $post->recipe->recipeIngredients()->where('ingredient_id', $recipeIngredient->ingredient->ingredient_id)->first();
+
+                        // Si el ingrediente ya existe, actualiza su cantidad
+                        if($existingIngredient){
+                            $existingIngredient->update([
+                                'quantity' => $recipeIngredient->quantity / $recipe->quantity
+                            ]);
+                        } else {
+                            // Si el ingrediente no existe, créalo
+                            $post->recipe->recipeIngredients()->create([
+                                'ingredient_id' => $recipeIngredient->ingredient->ingredient_id,
+                                'measurement_id' => $recipeIngredient->measurement->measurement_id,
+                                'quantity' => $recipeIngredient->quantity / $recipe->quantity
+                            ]);
+                        }
+                    }
+                    $post->recipe->recipeIngredients()->whereNotIn('ingredient_id', $current_ingredients)->delete();
+                }else{
+                    $post->recipe->recipeIngredients()->delete();
+                }
+            
+            }
+        }
+    }
+
     function deletePost(Request $request){
         function respond($success){
             return response()->json(['message'=>$success?'Post deleted succesfully':'Can not delete this post'],$success?200:400);
@@ -132,7 +186,7 @@ class PostController extends Controller
         ], 200);
     }
 
-    public function votePost(Request $request){
+    function votePost(Request $request){
         $vote = Vote::where([
             'user_id'=> Session::get('user'),
             'post_id'=> $request->id,

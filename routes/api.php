@@ -50,6 +50,7 @@ Route::middleware([AllowHeadersMiddleware::class, SessionHandler::class])->group
     Route::get('/post/likedBy/',[ChannelController::class, 'getLikedBy']);
     Route::get('/post/likedBy/{id}',[ChannelController::class, 'getLikedBy']);
     Route::post('/post/create/', [PostController::class, 'create']);
+    Route::post('/post/update/{post_id}', [PostController::class, 'updatePost']);
     Route::post('/post/comment/{post_id}', [PostController::class, 'commentPost']);
 
     
