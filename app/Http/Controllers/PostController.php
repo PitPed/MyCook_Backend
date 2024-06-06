@@ -89,7 +89,8 @@ class PostController extends Controller
             $newPost->save();
         }
         
-
+        $newPost->load('user', 'images', 'comments','comments.user', 'recipe', 'recipe.recipeIngredients',
+        'recipe.recipeIngredients.ingredient', 'recipe.recipeIngredients.measurement', 'recipe.steps', 'recipe.steps.method');
 
         $success = response()->json([
             "message" => 'Post created',
