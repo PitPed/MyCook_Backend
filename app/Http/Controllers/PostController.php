@@ -90,10 +90,10 @@ class PostController extends Controller
         }
         
 
+
         $success = response()->json([
             "message" => 'Post created',
-            'post' => $newPost
-        ], 200);
+            'post' => $newPost        ], 200);
         $error = response()->json([
             "message" => 'Error creating the post',
         ], 400);
@@ -153,6 +153,8 @@ class PostController extends Controller
             
             }
         }
+        $post->load('user', 'images', 'comments','comments.user', 'recipe', 'recipe.recipeIngredients',
+         'recipe.recipeIngredients.ingredient', 'recipe.recipeIngredients.measurement', 'recipe.steps', 'recipe.steps.method');
 
         return response()->json([
             "message" => 'Post updated',
