@@ -76,7 +76,7 @@ class PostController extends Controller
         }
 
         $saved = $newPost->save();
-        if ($saved) {
+        if ($saved && $request->has('images')) {
             $fotos = $this->saveFiles($request, 'images');
             foreach ($fotos as $foto) {
                 $image = $newPost->images()->create(array('url' => $foto, 'alt'=> $newPost->title));
