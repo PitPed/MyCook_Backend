@@ -80,7 +80,6 @@ class PostController extends Controller
         }
 
         $saved = $newPost->save();
-        dd($request->all());
         if ($saved && $request->has('images')) {
             $fotos = $this->saveFiles($request, 'images');
             foreach ($fotos as $foto) {
@@ -89,7 +88,6 @@ class PostController extends Controller
             }
             $newPost->save();
         }
-        $newPost->save();
         
 
         $success = response()->json([
