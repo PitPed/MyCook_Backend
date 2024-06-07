@@ -9,20 +9,21 @@ use Illuminate\Support\Facades\Session;
 
 class SessionController extends Controller
 {
+    // Comprobar si el usuario está conectado
     public function isLogged(Request $request)
     {
         return response()->json([
             "isLogged" => $request->session()->has('user'),
             'session' => session()->getId(),
-            'user'=> Session::get('user')
+            'user' => Session::get('user')
         ], 200);
     }
 
+    // Iniciar sesión
     public function login(Request $request)
     {
-        //User::where('username', 'admin')->update(array('password' => Hash::make('1234')));
         if (!isset($request->username) || !isset($request->password)) {
-            return response()->json(['message' => 'Se deben propocionar un usuario y una contraseña'], 400);
+            return response()->json(['message' => 'Se deben proporcionar un usuario y una contraseña'], 400);
         }
 
         $badLogin = response()->json(['message' => 'Usuario o contraseña incorrectos'], 400);
@@ -42,26 +43,27 @@ class SessionController extends Controller
         return response()->json(
             [   'message' => 'Login correcto',
                 'session' => session()->getId(),
-                'user'=> Session::get('user')], 200);
+                'user' => Session::get('user')], 200);
 
     }
 
+    // Registrar un nuevo usuario
     public function register(Request $request)
     {
         if (!isset($request->username) || !isset($request->email) || !isset($request->password)) {
             return response()->json(['message' => 'Se deben rellenar todos los campos'], 400);
         }
 
-        if(User::where('name', '=', $request->username)->orWhere('email', '=', $request->email)->count()>0){
+        if(User::where('name', '=', $request->username)->orWhere('email', '=', $request->email)->count() > 0){
             return response()->json(['message' => 'Ya existe un usuario con ese nombre o email'], 400);
         }
 
         $badRegister = response()->json(['message' => 'No se ha podido crear el usuario'], 400);
 
         $user = User::create([
-            'name'=>$request->username,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password)
+            'name' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
         ]);
 
         if($user->save()){
@@ -69,26 +71,27 @@ class SessionController extends Controller
             return response()->json(
                 [   'message' => 'El usuario ha sido creado',
                     'session' => session()->getId(),
-                    'user'=> Session::get('user')], 200);
-        }else{
+                    'user' => Session::get('user')], 200);
+        } else {
             return $badRegister;
         }
     }
 
+    // Cerrar sesión
     public function logout(Request $request)
     {
         $request->session()->pull('user', $request->id_usuario);
         return response()->json(['message' => 'La sesión se ha cerrado'], 200);
     }
 
+    // Crear un usuario administrador
     public function createAdmin(){
         $admin = new User([
-            "name"=>"admin",
-            "email"=>"admin@email.mail",
-            "password"=>Hash::make('1234')
+            "name" => "admin",
+            "email" => "admin@email.mail",
+            "password" => Hash::make('1234')
         ]);
         $admin->save();
         return response()->json(['message' => 'Admin generado'], 200);
-
     }
 }
