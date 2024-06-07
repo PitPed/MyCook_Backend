@@ -22,7 +22,15 @@ INSERT INTO ingredients (name, calories, carbohydrates, sugars, fat, saturated, 
 ('Milk', 42.0, 4.7, 4.7, 1.0, 0.6, 3.4, 0.1),
 ('Apple', 52.0, 14.0, 10.0, 0.2, 0.0, 0.3, 0.0),
 ('Beef', 250.0, 0.0, 0.0, 20.0, 8.0, 25.0, 0.05),
-('Lettuce', 14.0, 2.9, 1.4, 0.1, 0.0, 1.4, 0.01);
+('Lettuce', 14.0, 2.9, 1.4, 0.1, 0.0, 1.4, 0.01)
+('Wheat flour', 364, 76, 0.3, 1, 0.2, 10, 0.01),
+('Sugar', 387, 100, 100, 0, 0, 0, 0.01),
+('Butter', 717, 0.1, 0.1, 81, 51, 1, 1.5),
+('Salt', 0, 0, 0, 0, 0, 0, 38.7),
+('Cheddar cheese', 403, 1.3, 0.5, 33, 19, 25, 1.7),
+('Pasta', 131, 25, 0.8, 1.1, 0.2, 5, 0.01),
+('Mozzarella cheese', 280, 3.1, 1, 17, 11, 28, 0.8),
+('Bacon', 541, 1.4, 0, 42, 14, 37, 1.8);
 
 INSERT INTO channels (name, is_public, open_posting) VALUES
 ('Recipes', TRUE, TRUE),
@@ -34,7 +42,8 @@ INSERT INTO channels (name, is_public, open_posting) VALUES
 ('Quick Meals', TRUE, TRUE),
 ('Baking', FALSE, TRUE),
 ('Seafood', TRUE, TRUE),
-('Slow Cooker', TRUE, TRUE);
+('Slow Cooker', TRUE, TRUE),
+('Italian Food', TRUE, TRUE);
 
 INSERT INTO measurements (name, type, equals_to) VALUES
 ('Teaspoon', 'volume', 5),
@@ -58,7 +67,12 @@ INSERT INTO methods (name) VALUES
 ('Frying'),
 ('Slow Cooking'),
 ('Microwaving'),
-('Blending');
+('Blending'),
+('Fry'),
+('Boil'),
+('Whisk'),
+('Mix'),
+('Stir');
 
 INSERT INTO categories (name) VALUES
 ('Appetizers'),
@@ -106,7 +120,11 @@ INSERT INTO posts (title, body, user_id) VALUES
 ('10-Minute Pasta Primavera', 'Make this quick and easy pasta primavera for a satisfying weeknight meal...', 7),
 ('Homemade Bread', "There's nothing like the smell of freshly baked bread...", 8),
 ('Shrimp Tacos', 'These shrimp tacos are bursting with flavor and perfect for taco night...', 9),
-('Holiday Roast Turkey', 'Impress your guests with this juicy and flavorful roast turkey...', 10);
+('Holiday Roast Turkey', 'Impress your guests with this juicy and flavorful roast turkey...', 10),
+('Chocolate Cake', 'A delicious and moist chocolate cake perfect for any occasion.', 1),
+('Pasta with Tomato Sauce', 'A simple and classic pasta dish with a rich tomato sauce.', 2),
+('Grilled Cheddar Cheese Sandwich', 'A quick and easy grilled cheese sandwich.', 3),
+('Sauteed Tomato and Pasta', 'A light and tasty pasta dish with sauteed tomatoes.', 4);
 
 INSERT INTO post_votes (liked, user_id, post_id) VALUES
 (true, 1, 1),
@@ -140,7 +158,11 @@ INSERT INTO recipes (post_id, duration, difficulty, quantity) VALUES
 (7, '00:20:00', 'medio', 4),
 (8, '02:30:00', 'dificil', 2),
 (9, '00:45:00', 'medio', 4),
-(10, '03:00:00', 'dificil', 10);
+(10, '03:00:00', 'dificil', 10),
+(11, '01:30:00', 'medio', 8),
+(12, '00:30:00', 'facil', 4),
+(13, '00:15:00', 'facil', 2),
+(14, '00:25:00', 'medio', 4);
 
 INSERT INTO comments (body, user_id, post_id) VALUES
 ('Great recipe, I will definitely make it again!', 2, 1),
@@ -164,7 +186,16 @@ INSERT INTO images (url, alt) VALUES
 ('image7.jpg', 'Pasta Primavera'),
 ('image8.jpg', 'Homemade Bread'),
 ('image9.jpg', 'Shrimp Tacos'),
-('image10.jpg', 'Roast Turkey');
+('image10.jpg', 'Roast Turkey'),
+('image11.jpg', 'Chocolate Cake'),
+('image12.jpg', 'Chocolate Cake'),
+('image13.jpg', 'Pasta with Tomato Sauce'),
+('image14.jpg', 'Pasta with Tomato Sauce'),
+('image15.jpg', 'Cheese Sandwich'),
+('image16.jpg', 'Cheese Sandwich'),
+('image17.jpg', 'Sauteed Tomato and Pasta');
+('image18.jpg', 'Sauteed Tomato and Pasta');
+
 
 INSERT INTO members (user_id, channel_id, rol) VALUES
 (1, 1, 'admin'),
@@ -200,7 +231,25 @@ INSERT INTO recipe_ingredients (recipe_id, ingredient_id, measurement_id, quanti
 (7, 7, 1, 1),
 (8, 8, 6, 200),
 (9, 9, 3, 1),
-(10, 10, 5, 5);
+(10, 10, 5, 5),
+(11, 11, 14, 200),
+(11, 12, 14, 200),
+(11, 13, 14, 200),
+(11, 14, 17, 250),
+(11, 15, 14, 4),
+(11, 16, 13, 1),
+(12, 20, 14, 200),
+(12, 18, 14, 400),
+(12, 17, 14, 50),
+(12, 16, 13, 1),
+(13, 11, 14, 50),
+(13, 12, 14, 5),
+(13, 13, 14, 10),
+(13, 19, 14, 100),
+(14, 20, 14, 200),
+(14, 18, 14, 400),
+(14, 17, 14, 50),
+(14, 16, 13, 1);
 
 INSERT INTO ingredient_categories (ingredient_id, category_id) VALUES
 (1, 3),
@@ -248,7 +297,21 @@ INSERT INTO steps (title, description, time, recipe_id, method_id) VALUES
 ('Cook Pasta', 'Boil water and cook pasta according to package instructions.', '00:12:00', 7, 1),
 ('Knead Dough', 'Knead the dough on a floured surface until smooth and elastic.', '00:15:00', 8, 10),
 ('Grill Shrimp', 'Grill the shrimp skewers for 3-4 minutes on each side.', '00:08:00', 9, 2),
-('Roast Turkey', 'Roast the turkey in the oven at 350°F for 3-4 hours, basting occasionally.', '03:30:00', 10, 5);
+('Roast Turkey', 'Roast the turkey in the oven at 350°F for 3-4 hours, basting occasionally.', '03:30:00', 10, 5),
+('Preheat oven', 'Preheat your oven to 180°C (350°F).', '00:10:00', 11, 11),
+('Mix dry ingredients', 'In a bowl, mix the flour, sugar, and salt.', '00:05:00', 11, 17),
+('Mix wet ingredients', 'In another bowl, whisk the eggs, then add the melted butter and milk.', '00:10:00', 11, 16),
+('Combine ingredients', 'Gradually add the dry ingredients to the wet mixture, stirring until smooth.', '00:10:00', 11, 18),
+('Bake', 'Pour the batter into a greased baking tin and bake for 45 minutes.', '00:45:00', 11, 11),
+('Boil pasta', 'Boil a pot of salted water and cook the pasta until al dente.', '00:10:00', 12, 13),
+('Prepare sauce', 'Heat olive oil in a pan, add chopped tomatoes and salt, and simmer for 15 minutes.', '00:15:00', 12, 15),
+('Combine pasta and sauce', 'Drain the pasta and mix it with the tomato sauce.', '00:05:00', 12, 18),
+('Prepare bread', 'Spread butter on one side of each bread slice.', '00:05:00', 13, 18),
+('Add cheese', 'Place cheddar cheese slices between the bread.', '00:05:00', 13, 18),
+('Grill sandwich', 'Grill the sandwich on a pan until golden brown and cheese is melted.', '00:05:00', 13, 14),
+('Boil pasta', 'Boil a pot of salted water and cook the pasta until al dente.', '00:10:00', 14, 13),
+('Saute tomatoes', 'Heat olive oil in a pan, add chopped tomatoes and salt, and saute for 10 minutes.', '00:10:00', 14, 15),
+('Combine pasta and tomatoes', 'Drain the pasta and mix it with the sauteed tomatoes.', '00:05:00', 14, 18);
 
 INSERT INTO post_images (post_id, image_id) VALUES
 (1, 1),
@@ -260,7 +323,15 @@ INSERT INTO post_images (post_id, image_id) VALUES
 (7, 7),
 (8, 8),
 (9, 9),
-(10, 10);
+(10, 10),
+(11, 11),
+(11, 12),
+(12, 13),
+(12, 14),
+(13, 15),
+(13, 16),
+(14, 17),
+(14, 18);
 
 INSERT INTO user_images (user_id, image_id) VALUES
 (1, 1),
