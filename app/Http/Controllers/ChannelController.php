@@ -96,7 +96,7 @@ class ChannelController extends Controller
 
     // Obtener todos los canales públicos
     public function getAllChannels(Request $request){
-        $channels = Channel::where('is_public', '!=', 0)->get();
+        $channels = Channel::where('is_public', '!=', 0)->orderBy('name')->get();
         foreach($channels as $channel){
             $channel->amIMember();
         }
