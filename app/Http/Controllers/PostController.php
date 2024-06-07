@@ -63,20 +63,24 @@ class PostController extends Controller
             'body'=>$request->get('description'),
         ]);
 
-        if($request->has('recipe')){
+        if($request->has('recipe') && $request->get('recipe')!=null){
             $recipe=json_decode($request->get('recipe'));
             $newPost->recipe()->create(['duration'=>$recipe->duration,'difficulty'=>$recipe->difficulty, 'quantity'=>$recipe->quantity]);
-            foreach($recipe->recipe_ingredients as $recipe_ingredient){
-                $newPost->recipe->recipeIngredients()->create(['recipe_id'=>$newPost->recipe->recipe_id, 'ingredient_id'=>$recipe_ingredient->ingredient->ingredient_id, 'measurement_id'=>$recipe_ingredient->measurement->measurement_id, 'quantity'=>$recipe_ingredient->quantity]);
+            if($recipe->recipe_ingredients!= null){
+                foreach($recipe->recipe_ingredients as $recipeIngredient){
+                    $newPost->recipe->recipeIngredients()->create(['recipe_id'=>$newPost->recipe->recipe_id, 'ingredient_id'=>$recipeIngredient->ingredient->ingredient_id, 'measurement_id'=>$recipeIngredient->measurement->measurement_id, 'quantity'=>$recipeIngredient->quantity/$recipe->quantity]);
+                }
             }
-            foreach($recipe->steps as $step){
-                $newStep=$newPost->recipe->steps()->create(['title'=>$step->title, 'description'=>$step->description, 'time'=>$step->time, 'method_id'=>$step->method->method_id]);
+            if($recipe->steps!=null){
+                foreach($recipe->steps as $step){
+                    $newPost->recipe->steps()->create(['title'=>$step->title, 'description'=>$step->description, 'time'=>$step->time, 'method_id'=>$step->method->method_id]);
+                }
             }
             $newPost->save();
         }
 
         $saved = $newPost->save();
-        if ($saved) {
+        if ($saved && $request->has('images')) {
             $fotos = $this->saveFiles($request, 'images');
             foreach ($fotos as $foto) {
                 $image = $newPost->images()->create(array('url' => $foto, 'alt'=> $newPost->title));
@@ -84,18 +88,85 @@ class PostController extends Controller
             }
             $newPost->save();
         }
-
         
+        $newPost->load('user', 'images', 'comments','comments.user', 'recipe', 'recipe.recipeIngredients',
+        'recipe.recipeIngredients.ingredient', 'recipe.recipeIngredients.measurement', 'recipe.steps', 'recipe.steps.method');
+
+        if($newPost->recipe!=null){
+            $newPost->recipe->calculateNutrition();
+        }
 
         $success = response()->json([
             "message" => 'Post created',
-            'post' => $newPost
-        ], 200);
+            'post' => $newPost        ], 200);
         $error = response()->json([
             "message" => 'Error creating the post',
         ], 400);
 
         return $saved?$success:$error;
+    }
+
+    function updatePost(Request $request){
+        $post = Post::findOrFail($request->post_id);
+
+        if($post->user_id != Session::get('user')){
+            return response()->json([ "message" => 'The post must be yours to update it'], 400);
+        }
+        $post->title = $request->get('title');
+        $post->body = $request->get('description');
+
+        // Guarda los cambios en el post principal
+        $post->save();
+
+        // Actualiza la receta, si se proporciona
+        if($request->has('recipe') && $request->get('recipe') != null){
+            $recipe = json_decode($request->get('recipe'));
+
+            // Si la receta ya existe, actualiza sus campos
+            if($post->recipe){
+                $post->recipe->update([
+                    'duration' => $recipe->duration,
+                    'difficulty' => $recipe->difficulty,
+                    'quantity' => $recipe->quantity
+                ]);
+
+                // Actualiza los ingredientes de la receta, si están presentes
+                if($recipe->recipe_ingredients){
+                    $current_ingredients = [];
+                    foreach($recipe->recipe_ingredients as $recipeIngredient){
+                        $current_ingredients[] = $recipeIngredient->ingredient->ingredient_id;
+                        $existingIngredient = $post->recipe->recipeIngredients()->where('ingredient_id', $recipeIngredient->ingredient->ingredient_id)->first();
+
+                        // Si el ingrediente ya existe, actualiza su cantidad
+                        if($existingIngredient){
+                            $existingIngredient->update([
+                                'quantity' => $recipeIngredient->quantity / $recipe->quantity
+                            ]);
+                        } else {
+                            // Si el ingrediente no existe, créalo
+                            $post->recipe->recipeIngredients()->create([
+                                'ingredient_id' => $recipeIngredient->ingredient->ingredient_id,
+                                'measurement_id' => $recipeIngredient->measurement->measurement_id,
+                                'quantity' => $recipeIngredient->quantity / $recipe->quantity
+                            ]);
+                        }
+                    }
+                    $post->recipe->recipeIngredients()->whereNotIn('ingredient_id', $current_ingredients)->delete();
+                }else{
+                    $post->recipe->recipeIngredients()->delete();
+                }
+            
+            }
+        }
+        $post->load('user', 'images', 'comments','comments.user', 'recipe', 'recipe.recipeIngredients',
+         'recipe.recipeIngredients.ingredient', 'recipe.recipeIngredients.measurement', 'recipe.steps', 'recipe.steps.method');
+         if($post->recipe!=null){
+            $post->recipe->calculateNutrition();
+        }
+        return response()->json([
+            "message" => 'Post updated',
+            'post' => $post
+        ], 200);
     }
 
     function deletePost(Request $request){
@@ -118,13 +189,18 @@ class PostController extends Controller
     }
 
     function getPostsLike(Request $request){
-        $posts = Post::where('title', 'LIKE', "%$request->title%")->orderByDesc('post_id')->get();
+        $posts = Post::where('title', 'LIKE', "%$request->title%")->with('user', 'images', 'comments','comments.user')->orderByDesc('post_id')->get();
+        foreach($posts as $post){
+            $post->votes = $post->votesNumber();
+            $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
+            $post->voted = $voted?$voted->liked:null;
+        }
         return response()->json([
             "posts" => $posts
         ], 200);
     }
 
-    public function votePost(Request $request){
+    function votePost(Request $request){
         $vote = Vote::where([
             'user_id'=> Session::get('user'),
             'post_id'=> $request->id,
@@ -151,9 +227,9 @@ class PostController extends Controller
     public function commentPost(Request $request){
         $comment = Comment::create([
             'user_id'=> Session::get('user'),
-            'post_id'=> $request->id,
-            'body' => $request->body
+            'post_id'=> $request->post_id,
+            'body' => $request->get('body')
         ]);
-        return response()->json(['message'=>'Commented', 'comment'=> $comment],200);
+        return response()->json(['message'=>'Commented succesfully', 'comment'=> $comment],200);
     }
 }

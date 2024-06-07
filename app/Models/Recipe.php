@@ -46,7 +46,53 @@ class Recipe extends Model
         $this->totalMass = $this->recipeIngredients->sum(function ($ingredient) {
             return round($ingredient->quantity * $ingredient->measurement->equals_to,2);
         });
-        $this->nutritionPer100g = [
+        $nutritionPerPortion = [
+            "calories" => 0,
+            "carbohydrates" => 0,
+            "sugars" => 0,
+            "fat" => 0,
+            "saturated" => 0,
+            "protein" => 0,
+            "salt" => 0
+        ];
+
+        $nutritionPer100g = [
+            "calories" => 0,
+            "carbohydrates" => 0,
+            "sugars" => 0,
+            "fat" => 0,
+            "saturated" => 0,
+            "protein" => 0,
+            "salt" => 0
+        ];
+
+        foreach($this->recipeIngredients as $ingredient){
+            $ingredientMass =  $ingredient->quantity * $ingredient->measurement->equals_to;
+            $nutritionPerPortion['calories']+= $ingredient->ingredient->calories * $ingredientMass/100;
+            $nutritionPerPortion['carbohydrates']+= $ingredient->ingredient->carbohydrates * $ingredientMass/100;
+            $nutritionPerPortion['sugars']+= $ingredient->ingredient->sugars * $ingredientMass/100;
+            $nutritionPerPortion['fat']+= $ingredient->ingredient->fat * $ingredientMass/100;
+            $nutritionPerPortion['saturated']+= $ingredient->ingredient->saturated * $ingredientMass/100;
+            $nutritionPerPortion['protein']+= $ingredient->ingredient->protein * $ingredientMass/100;
+            $nutritionPerPortion['carbohydrates']+= $ingredient->ingredient->carbohydrates * $ingredientMass/100;
+            $nutritionPerPortion['sugars']+= $ingredient->ingredient->sugars * $ingredientMass/100;
+            $nutritionPerPortion['salt']+= $ingredient->ingredient->salt * $ingredientMass/100;
+        }
+
+        $this->nutritionPerPortion = $nutritionPerPortion;
+
+        $this->nutritionPer100g = $this->totalMass>0? [
+            "calories" => round($nutritionPerPortion['calories']/$this->totalMass*100,2),
+            "carbohydrates" => round($nutritionPerPortion['carbohydrates']/$this->totalMass*100,2),
+            "sugars" => round($nutritionPerPortion['sugars']/$this->totalMass*100,2),
+            "fat" => round($nutritionPerPortion['fat']/$this->totalMass*100,2),
+            "saturated" => round($nutritionPerPortion['saturated']/$this->totalMass*100,2),
+            "protein" => round($nutritionPerPortion['protein']/$this->totalMass*100,2),
+            "salt" => round($nutritionPerPortion['salt']/$this->totalMass*100,2),
+        ]: $nutritionPer100g;
+
+
+        /* $this->nutritionPer100g = [
             "calories" => $this->recipeIngredients->sum(function ($ingredient) {
                 $mass = $ingredient->quantity * $ingredient->measurement->equals_to;
                 return round($ingredient->ingredient->calories * $mass / $this->totalMass,2);
@@ -75,7 +121,6 @@ class Recipe extends Model
                 $mass = $ingredient->quantity * $ingredient->measurement->equals_to;
                 return round($ingredient->ingredient->salt * $mass / $this->totalMass,2);
             })
-        ];
-        
+        ]; */
     }
 }

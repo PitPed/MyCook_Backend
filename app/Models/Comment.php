@@ -12,8 +12,8 @@ class Comment extends Model
     protected $table = 'comments';
     protected $primaryKey = 'comment_id';
     public $timestamps = false;
-    protected $guarded = ['comment_id', 'date', 'user_id','post_id'];
-    protected $fillable = ['body'];
+    protected $guarded = ['comment_id', 'date', 'user_id', 'post_id'];
+    protected $fillable = ['body', 'user_id', 'post_id'];
     const CREATED_AT = 'date';
 
     public function user(): BelongsTo

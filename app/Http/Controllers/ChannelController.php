@@ -26,13 +26,20 @@ function addUserToChannel($user_id, $channel_id){
 class ChannelController extends Controller
 {
     public function getLikedBy(Request $request){
+        $user_id = $request->id?$request->id: Session::get('user');
         $likes = Vote::where([
-            'user_id'=>$request->id,
+            'user_id'=>$user_id,
             'liked'=>1
             ])->get();
-        $posts = [];
+        $post_ids = [];
         foreach($likes as $vote){
-            $posts[] = $vote->post;
+            $post_ids[] = $vote->post_id;
+        }
+        $posts = Post::whereIn('post_id', $post_ids)->with('user', 'images', 'comments','comments.user')->get();
+        foreach($posts as $post){
+            $post->votes = $post->votesNumber();
+            $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
+            $post->voted = $voted?$voted->liked:null;
         }
         return response()->json([
             'posts'=>$posts
@@ -40,7 +47,13 @@ class ChannelController extends Controller
     }
 
     public function getPostedBy(Request $request){
-        $posts = Post::where(['user_id'=>$request->id])->with('user', 'images', 'comments','comments.user')->get();
+        $user_id = $request->id?$request->id: Session::get('user');
+        $posts = Post::where(['user_id'=>$user_id])->with('user', 'images', 'comments','comments.user')->get();
+        foreach($posts as $post){
+            $post->votes = $post->votesNumber();
+            $voted = Vote::where(['user_id'=> Session::get('user'),'post_id'=> $post->post_id])->first();
+            $post->voted = $voted?$voted->liked:null;
+        }
         return response()->json([
             'posts'=>$posts
         ]);
@@ -71,6 +84,9 @@ public function getChannelPosts(Request $request){
             $channels[] = $member->channels;
         }
         //dd($channels);
+        foreach($channels as $channel){
+            $channel->amIMember();
+        }
         return response()->json([
             'channels'=>$channels
         ]);
@@ -78,9 +94,22 @@ public function getChannelPosts(Request $request){
 
     public function getAllChannels(Request $request){
         $channels = Channel::where('is_public', '!=', 0)->get();
+        foreach($channels as $channel){
+            $channel->amIMember();
+        }
         return response()->json([
             'channels'=>$channels
         ]);
+    }
+
+    function getChannelsLike(Request $request){
+        $channels = Channel::where('name', 'LIKE', "%$request->name%")->orderBy('name')->get();
+        foreach($channels as $channel){
+            $channel->amIMember();
+        }
+        return response()->json([
+            "channels" => $channels
+        ], 200);
     }
 
     public function addPostToChannel(Request $request){

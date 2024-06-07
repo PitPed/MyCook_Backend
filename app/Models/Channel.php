@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
+use Illuminate\Support\Facades\Session;
+
+
 class Channel extends Model
 {
     use HasFactory;
@@ -36,4 +39,9 @@ class Channel extends Model
     {
         return $this->hasManyThrough(User::class, Member::class, 'member_id', 'channel_id');
     }
+
+    public function amIMember(): bool{
+        $this->amIMember = $this->members()->where('user_id','=', Session::get('user'))->get()->count()>0;
+        return $this->amIMember;
+    }   
 }

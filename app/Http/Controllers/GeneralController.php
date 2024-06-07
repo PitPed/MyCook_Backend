@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Measurement;
 use Illuminate\Http\Request;
 use App\Models\Method;
 
@@ -18,8 +19,8 @@ class GeneralController extends Controller
     }
 
     public function getAllMeasurements(){
-        $methods = Method::orderBy('name')->get();
-        return response()->json(['methods'=>$methods]);
+        $measurements = Measurement::orderBy('name')->get();
+        return response()->json(['measurements'=>$measurements]);
     }
     
 }
